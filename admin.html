@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin · Dalla Community Hub</title>
+        <meta name="theme-color" content="#ffffff" />
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                    "Inter", Arial, sans-serif;
+                background: #f5f5f7;
+                color: #1d1d1f;
+                -webkit-font-smoothing: antialiased;
+                min-height: 100vh;
+            }
+
+            .login-wrap {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+            }
+            .login-card {
+                background: white;
+                border-radius: 24px;
+                padding: 40px;
+                width: min(420px, 100%);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            .login-card h1 {
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+                margin-bottom: 6px;
+            }
+            .login-card p {
+                color: #6c6c70;
+                font-size: 14px;
+                margin-bottom: 28px;
+            }
+            .login-card input {
+                width: 100%;
+                padding: 15px 16px;
+                border: 1px solid #eaeaea;
+                border-radius: 14px;
+                font-size: 15px;
+                outline: none;
+                margin-bottom: 14px;
+                background: white;
+            }
+            .login-card input:focus {
+                border-color: #0071e3;
+                box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
+            }
+            .login-card button {
+                width: 100%;
+                padding: 15px;
+                border: none;
+                background: #1d1d1f;
+                color: white;
+                border-radius: 14px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.15s ease;
+            }
+            .login-card button:hover {
+                background: #000;
+            }
+            .login-card button:disabled {
+                opacity: 0.6;
+                cursor: default;
+            }
+            .login-error {
+                color: #e5484d;
+                font-size: 13px;
+                margin-top: 12px;
+                display: none;
+            }
+            .login-error.show {
+                display: block;
+            }
+
+            .admin-app {
+                display: none;
+                padding: 32px 24px 60px;
+                max-width: 1280px;
+                margin: 0 auto;
+            }
+            .admin-app.show {
+                display: block;
+            }
+
+            .topbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .brand-logo {
+                width: 44px;
+                height: 44px;
+                background: #1d1d1f;
+                color: white;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: 700;
+            }
+            .brand-title {
+                font-size: 17px;
+                font-weight: 600;
+                letter-spacing: -0.3px;
+            }
+            .brand-sub {
+                font-size: 12px;
+                color: #6c6c70;
+                margin-top: 2px;
+            }
+
+            .topbar-actions {
+                display: flex;
+                gap: 10px;
+            }
+            .btn {
+                padding: 10px 18px;
+                border-radius: 12px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                border: 1px solid #eaeaea;
+                background: white;
+                color: #1d1d1f;
+                transition: all 0.15s ease;
+            }
+            .btn:hover {
+                background: #f5f5f7;
+            }
+            .btn.dark {
+                background: #1d1d1f;
+                color: white;
+                border-color: #1d1d1f;
+            }
+            .btn.dark:hover {
+                background: #000;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 18px;
+                margin-bottom: 24px;
+            }
+
+            .kpi {
+                background: white;
+                border-radius: 20px;
+                padding: 24px;
+                border: 1px solid #eaeaea;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            }
+            .kpi-label {
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                color: #6c6c70;
+                margin-bottom: 10px;
+            }
+            .kpi-value {
+                font-size: 28px;
+                font-weight: 700;
+                letter-spacing: -1px;
+                font-variant-numeric: tabular-nums;
+            }
+            .kpi-value.green {
+                color: #21b987;
+            }
+            .kpi-sub {
+                font-size: 12px;
+                color: #8e8e93;
+                margin-top: 8px;
+            }
+
+            .panel {
+                background: white;
+                border-radius: 20px;
+                border: 1px solid #eaeaea;
+                overflow: hidden;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+                margin-bottom: 24px;
+            }
+            .panel-header {
+                padding: 22px 26px;
+                border-bottom: 1px solid #eaeaea;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .panel-title {
+                font-size: 17px;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th,
+            td {
+                padding: 14px 20px;
+                text-align: left;
+                font-size: 13px;
+                border-bottom: 1px solid #f0f0f2;
+                white-space: nowrap;
+            }
+            th {
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #6c6c70;
+                background: #fafafa;
+            }
+            tbody tr:hover {
+                background: #fafafa;
+            }
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .pill {
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+            .pill.success {
+                background: #e6f9f0;
+                color: #167f59;
+            }
+            .pill.failed {
+                background: #fdecec;
+                color: #b83036;
+            }
+            .pill.pending {
+                background: #fff4e0;
+                color: #a86a12;
+            }
+            .pill.mpesa {
+                background: #e8f8e0;
+                color: #1f7a17;
+            }
+            .pill.card {
+                background: #e8f0fb;
+                color: #1d4fb4;
+            }
+
+            .table-scroll {
+                overflow-x: auto;
+            }
+
+            .empty-row {
+                padding: 40px 20px;
+                text-align: center;
+                color: #8e8e93;
+                font-size: 14px;
+            }
+
+            .refresh-tag {
+                font-size: 12px;
+                color: #8e8e93;
+            }
+
+            @media (max-width: 640px) {
+                .admin-app {
+                    padding: 20px 14px 40px;
+                }
+                .login-card {
+                    padding: 28px 22px;
+                }
+                .kpi {
+                    padding: 18px;
+                }
+                .kpi-value {
+                    font-size: 22px;
+                }
+                th,
+                td {
+                    padding: 10px 12px;
+                    font-size: 12px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-wrap" id="loginWrap">
+            <div class="login-card">
+                <h1>Admin access</h1>
+                <p>Dalla Community Hub · Donations dashboard</p>
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Admin password"
+                    autocomplete="current-password"
+                />
+                <button id="loginBtn">Sign in</button>
+                <div class="login-error" id="loginError"></div>
+            </div>
+        </div>
+
+        <div class="admin-app" id="adminApp">
+            <header class="topbar">
+                <div class="brand">
+                    <div class="brand-logo">₿</div>
+                    <div>
+                        <div class="brand-title">Dalla Hub · Admin</div>
+                        <div class="brand-sub" id="adminSub">
+                            Loading summary…
+                        </div>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn" onclick="loadAll()">Refresh</button>
+                    <button class="btn dark" onclick="logout()">
+                        Sign out
+                    </button>
+                </div>
+            </header>
+
+            <section class="grid">
+                <div class="kpi">
+                    <div class="kpi-label">Total received</div>
+                    <div class="kpi-value green" id="kpiGross">KES 0.00</div>
+                    <div class="kpi-sub" id="kpiGrossSub">
+                        All successful donations
+                    </div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-label">Paystack available</div>
+                    <div class="kpi-value" id="kpiPaystack">KES 0.00</div>
+                    <div class="kpi-sub">Live from Paystack</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-label">Successful</div>
+                    <div class="kpi-value" id="kpiSuccess">0</div>
+                    <div class="kpi-sub" id="kpiSuccessSub">
+                        of 0 transactions
+                    </div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-label">By channel</div>
+                    <div
+                        class="kpi-value"
+                        id="kpiChannels"
+                        style="font-size: 16px; letter-spacing: 0"
+                    >
+                        —
+                    </div>
+                    <div class="kpi-sub">Card vs M-Pesa</div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Transaction history</div>
+                    <div class="refresh-tag" id="txUpdated">
+                        Updated just now
+                    </div>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>When</th>
+                                <th>Reference</th>
+                                <th>Donor</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th style="text-align: right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="txBody">
+                            <tr>
+                                <td colspan="6" class="empty-row">Loading…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            const API = {
+                login: "/api/admin/login",
+                logout: "/api/admin/logout",
+                me: "/api/admin/me",
+                summary: "/api/admin/summary",
+                transactions: "/api/admin/transactions",
+            };
+
+            const loginWrap = document.getElementById("loginWrap");
+            const adminApp = document.getElementById("adminApp");
+            const loginBtn = document.getElementById("loginBtn");
+            const loginError = document.getElementById("loginError");
+            const adminPassword = document.getElementById("adminPassword");
+
+            function money(value, currency = "KES") {
+                return new Intl.NumberFormat("en-KE", {
+                    style: "currency",
+                    currency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(Number(value || 0));
+            }
+
+            function formatDate(value) {
+                if (!value) return "";
+                const d = new Date(value.replace(" ", "T") + "Z");
+                if (Number.isNaN(d.getTime())) return value;
+                return new Intl.DateTimeFormat("en-KE", {
+                    day: "numeric",
+                    month: "short",
+                    hour: "numeric",
+                    minute: "2-digit",
+                }).format(d);
+            }
+
+            function escapeHtml(v) {
+                return String(v ?? "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            async function checkAuth() {
+                try {
+                    const res = await fetch(API.me, { credentials: "include" });
+                    if (res.ok) {
+                        loginWrap.style.display = "none";
+                        adminApp.classList.add("show");
+                        loadAll();
+                        return true;
+                    }
+                } catch {}
+                return false;
+            }
+
+            loginBtn.addEventListener("click", async () => {
+                const pwd = adminPassword.value;
+                if (!pwd) return;
+                loginBtn.disabled = true;
+                loginBtn.textContent = "Signing in…";
+                loginError.classList.remove("show");
+
+                try {
+                    const res = await fetch(API.login, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ password: pwd }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Login failed");
+
+                    loginWrap.style.display = "none";
+                    adminApp.classList.add("show");
+                    loadAll();
+                } catch (err) {
+                    loginError.textContent = err.message;
+                    loginError.classList.add("show");
+                } finally {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = "Sign in";
+                }
+            });
+
+            adminPassword.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") loginBtn.click();
+            });
+
+            async function logout() {
+                await fetch(API.logout, {
+                    method: "POST",
+                    credentials: "include",
+                });
+                adminApp.classList.remove("show");
+                loginWrap.style.display = "flex";
+                adminPassword.value = "";
+            }
+
+            async function loadAll() {
+                await Promise.all([loadSummary(), loadTransactions()]);
+            }
+
+            async function loadSummary() {
+                try {
+                    const res = await fetch(API.summary, {
+                        credentials: "include",
+                    });
+                    const data = await res.json();
+                    if (!res.ok)
+                        throw new Error(data.error || "Unable to load summary");
+
+                    document.getElementById("kpiGross").textContent = money(
+                        data.gross_received,
+                        data.currency,
+                    );
+                    document.getElementById("kpiSuccess").textContent =
+                        data.successful_transactions;
+                    document.getElementById("kpiSuccessSub").textContent =
+                        `of ${data.total_transactions} total`;
+
+                    if (typeof data.paystack_balance === "number") {
+                        document.getElementById("kpiPaystack").textContent =
+                            money(data.paystack_balance, data.currency);
+                    } else {
+                        document.getElementById("kpiPaystack").textContent =
+                            "Unavailable";
+                    }
+
+                    if (
+                        Array.isArray(data.by_channel) &&
+                        data.by_channel.length
+                    ) {
+                        document.getElementById("kpiChannels").textContent =
+                            data.by_channel
+                                .map(
+                                    (c) =>
+                                        `${c.channel === "mobile_money" ? "M-Pesa" : "Card"}: ${money(c.total, data.currency)}`,
+                                )
+                                .join(" · ");
+                    } else {
+                        document.getElementById("kpiChannels").textContent =
+                            "—";
+                    }
+
+                    const stamp = new Date(data.updated_at);
+                    document.getElementById("adminSub").textContent =
+                        `Updated ${stamp.toLocaleTimeString("en-KE")}`;
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            async function loadTransactions() {
+                const tbody = document.getElementById("txBody");
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-row">Loading…</td></tr>`;
+
+                try {
+                    const res = await fetch(`${API.transactions}?limit=200`, {
+                        credentials: "include",
+                    });
+                    const data = await res.json();
+                    if (!res.ok)
+                        throw new Error(
+                            data.error || "Unable to load transactions",
+                        );
+
+                    if (!data.transactions.length) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="empty-row">No transactions yet.</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = data.transactions
+                        .map((t) => {
+                            const statusClass =
+                                t.status === "success"
+                                    ? "success"
+                                    : [
+                                            "failed",
+                                            "reversed",
+                                            "abandoned",
+                                        ].includes(t.status)
+                                      ? "failed"
+                                      : "pending";
+                            const methodClass =
+                                t.channel === "mobile_money" ? "mpesa" : "card";
+                            const methodLabel =
+                                t.channel === "mobile_money"
+                                    ? "M-Pesa"
+                                    : "Card";
+                            const donor = t.customer_name
+                                ? `${escapeHtml(t.customer_name)} <span style="color:#8e8e93;">·</span> ${escapeHtml(t.customer_email || "")}`
+                                : escapeHtml(t.customer_email || "—");
+                            return `
+            <tr>
+              <td>${escapeHtml(formatDate(t.created_at))}</td>
+              <td><code style="font-family:monospace;font-size:12px;">${escapeHtml(t.reference)}</code></td>
+              <td>${donor}</td>
+              <td><span class="pill ${methodClass}">${methodLabel}</span></td>
+              <td><span class="pill ${statusClass}">${escapeHtml(t.status)}</span></td>
+              <td style="text-align:right;font-weight:600;font-variant-numeric:tabular-nums;">${money(t.amount, t.currency)}</td>
+            </tr>
+          `;
+                        })
+                        .join("");
+
+                    document.getElementById("txUpdated").textContent =
+                        `Updated ${new Date().toLocaleTimeString("en-KE")}`;
+                } catch (e) {
+                    console.error(e);
+                    tbody.innerHTML = `<tr><td colspan="6" class="empty-row">Unable to load transactions.</td></tr>`;
+                }
+            }
+
+            setInterval(() => {
+                if (adminApp.classList.contains("show")) {
+                    loadSummary();
+                    loadTransactions();
+                }
+            }, 60000);
+
+            checkAuth();
+        </script>
+    </body>
+</html>

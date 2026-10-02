@@ -1,0 +1,20 @@
+{
+  "name": "dalla-community-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dalla Community Hub donation platform with Paystack (card + M-Pesa)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "compression": "^1.8.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
