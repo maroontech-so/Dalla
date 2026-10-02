@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Donate — Dalla Community Hub</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
             --blue: #1687e8;
@@ -22,9 +18,7 @@
             --neon: #39ff88;
         }
 
-        html, body {
-            height: 100%;
-        }
+        html, body { height: 100%; }
 
         body {
             font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -55,11 +49,7 @@
             background: #fff;
         }
 
-        /* ============================================================
-           MOBILE FIRST (default)
-           ============================================================ */
-
-        /* On mobile: card visual area is a normal flow block (not absolute) */
+        /* ---------- MOBILE FIRST ---------- */
         .checkout-right {
             order: 1;
             display: flex;
@@ -68,7 +58,7 @@
             padding: 24px 16px 8px;
             position: relative;
             width: 100%;
-            min-height: 220px; /* reserves space so layout doesn't collapse */
+            min-height: 220px;
         }
 
         .checkout-left {
@@ -82,17 +72,8 @@
             margin-left: 0;
         }
 
-        .checkout-left h2 {
-            font-size: 20px;
-            margin-bottom: 4px;
-            letter-spacing: -0.3px;
-        }
-        .checkout-left .sub {
-            color: #777;
-            font-size: 13px;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
+        .checkout-left h2 { font-size: 20px; margin-bottom: 4px; letter-spacing: -0.3px; }
+        .checkout-left .sub { color: #777; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
 
         .back-link {
             display: inline-flex;
@@ -106,11 +87,8 @@
             letter-spacing: 0.3px;
             transition: color 0.2s ease;
         }
-        .back-link:hover {
-            color: #3266c5;
-        }
+        .back-link:hover { color: #3266c5; }
 
-        /* Amount buttons – fit screen */
         .amount-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -132,10 +110,7 @@
             width: 100%;
             padding: 0 4px;
         }
-        .amount-btn:hover {
-            border-color: #b8bccb;
-            background: #f7f8fc;
-        }
+        .amount-btn:hover { border-color: #b8bccb; background: #f7f8fc; }
         .amount-btn.active {
             background: #1d4fb4;
             border-color: #1d4fb4;
@@ -148,11 +123,7 @@
             box-shadow: 0 4px 12px rgba(67, 176, 42, 0.25);
         }
 
-        .custom-amount-wrap {
-            position: relative;
-            margin-bottom: 18px;
-            width: 100%;
-        }
+        .custom-amount-wrap { position: relative; margin-bottom: 18px; width: 100%; }
         .custom-amount-wrap .currency {
             position: absolute;
             left: 14px;
@@ -204,9 +175,7 @@
             transition: transform 0.35s cubic-bezier(0.4, 0.1, 0.2, 1);
             z-index: 1;
         }
-        .method-toggle.mpesa .slider {
-            transform: translateX(100%);
-        }
+        .method-toggle.mpesa .slider { transform: translateX(100%); }
         .method-toggle button {
             flex: 1;
             position: relative;
@@ -226,30 +195,12 @@
             letter-spacing: 0.2px;
             padding: 0 4px;
         }
-        .method-toggle button.active {
-            color: #111;
-        }
-        .method-toggle .logo-svg {
-            width: 38px;
-            height: 15px;
-            display: block;
-        }
-        .method-toggle .logo-svg.mpesa-svg {
-            width: 52px;
-            height: 17px;
-        }
+        .method-toggle button.active { color: #111; }
+        .method-toggle .logo-svg { width: 38px; height: 15px; display: block; }
+        .method-toggle .logo-svg.mpesa-svg { width: 52px; height: 17px; }
 
-        .form-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            width: 100%;
-        }
-
-        .field {
-            margin-bottom: 16px;
-            width: 100%;
-        }
+        .form-row { display: flex; flex-direction: column; gap: 0; width: 100%; }
+        .field { margin-bottom: 16px; width: 100%; }
         .field label {
             display: block;
             font-size: 10px;
@@ -258,10 +209,7 @@
             color: #454545;
             letter-spacing: 0.4px;
         }
-        .field label .req {
-            color: var(--red);
-            margin-left: 2px;
-        }
+        .field label .req { color: var(--red); margin-left: 2px; }
         .field input {
             width: 100%;
             height: 48px;
@@ -274,28 +222,15 @@
             font-size: 14px;
             transition: border 0.25s ease, box-shadow 0.25s ease;
         }
-        .field input::placeholder {
-            color: #b8bcc7;
-            font-weight: 500;
-        }
+        .field input::placeholder { color: #b8bcc7; font-weight: 500; }
         .field input:focus {
             border-color: #3266c5;
             box-shadow: 0 0 0 3px rgba(50, 102, 197, 0.08);
         }
 
-        .field-group {
-            display: none;
-            width: 100%;
-        }
-        .field-group.active {
-            display: block;
-        }
-        .format-hint {
-            font-size: 10px;
-            color: #888;
-            margin-top: 5px;
-            letter-spacing: 0.2px;
-        }
+        .field-group { display: none; width: 100%; }
+        .field-group.active { display: block; }
+        .format-hint { font-size: 10px; color: #888; margin-top: 5px; letter-spacing: 0.2px; }
 
         .pay-button {
             width: 100%;
@@ -316,25 +251,13 @@
             background: var(--mpesa-dark);
             box-shadow: 0 5px 12px rgba(67, 176, 42, 0.25);
         }
-        .pay-button.mpesa-mode:hover {
-            box-shadow: 0 8px 18px rgba(67, 176, 42, 0.35);
-        }
-        .pay-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(29, 79, 180, 0.23);
-        }
-        .pay-button:active {
-            transform: scale(0.98);
-        }
-        .pay-button:disabled {
-            cursor: not-allowed;
-            opacity: 0.85;
-        }
-        .pay-button:disabled:hover {
-            transform: none;
-        }
+        .pay-button.mpesa-mode:hover { box-shadow: 0 8px 18px rgba(67, 176, 42, 0.35); }
+        .pay-button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(29, 79, 180, 0.23); }
+        .pay-button:active { transform: scale(0.98); }
+        .pay-button:disabled { cursor: not-allowed; opacity: 0.85; }
+        .pay-button:disabled:hover { transform: none; }
 
-        /* ---------- CARD VIEW (mobile: static flow) ---------- */
+        /* ---------- CARD VIEW ---------- */
         .card-view {
             display: flex;
             align-items: center;
@@ -344,11 +267,7 @@
             width: 100%;
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
-        /* When hidden, we don't use absolute positioning on mobile — 
-           we just collapse it so the mpesa view can take its place */
-        .card-view.hidden {
-            display: none;
-        }
+        .card-view.hidden { display: none; }
 
         .card-stage {
             position: relative;
@@ -389,9 +308,7 @@
             initial-value: 0deg;
             inherits: false;
         }
-        @keyframes neonSpin {
-            to { --neon-angle: 360deg; }
-        }
+        @keyframes neonSpin { to { --neon-angle: 360deg; } }
 
         .neon-halo {
             position: absolute;
@@ -421,9 +338,7 @@
             transition: transform 0.9s cubic-bezier(0.4, 0.1, 0.2, 1);
             z-index: 1;
         }
-        .card-wrapper.flipped {
-            transform: rotateY(180deg);
-        }
+        .card-wrapper.flipped { transform: rotateY(180deg); }
 
         .card-face {
             position: absolute;
@@ -435,8 +350,7 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 0 rgba(0, 0, 0, 0.35);
         }
 
-        .card-front,
-        .card-back {
+        .card-front, .card-back {
             position: absolute;
             inset: 0;
             padding: 18px;
@@ -444,8 +358,7 @@
             border-radius: 14px;
             transition: background 0.55s ease;
         }
-        .card-front::before,
-        .card-back::before {
+        .card-front::before, .card-back::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -456,8 +369,7 @@
             opacity: 0.55;
             z-index: 1;
         }
-        .card-front::after,
-        .card-back::after {
+        .card-front::after, .card-back::after {
             content: "";
             position: absolute;
             inset: 0;
@@ -680,9 +592,7 @@
             transition: opacity 0.3s ease;
             border-radius: 14px;
         }
-        .card-wrapper.processing .processing-badge {
-            opacity: 1;
-        }
+        .card-wrapper.processing .processing-badge { opacity: 1; }
 
         .badge-spinner {
             width: 32px;
@@ -694,9 +604,7 @@
             animation: badgeSpin 0.9s linear infinite;
             box-shadow: 0 0 20px rgba(57, 255, 136, 0.7);
         }
-        @keyframes badgeSpin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes badgeSpin { to { transform: rotate(360deg); } }
 
         .badge-text {
             font-size: 10px;
@@ -706,10 +614,7 @@
             text-shadow: 0 0 12px rgba(57, 255, 136, 0.85), 0 0 24px rgba(57, 255, 136, 0.45);
             animation: badgePulse 1.3s ease-in-out infinite;
         }
-        @keyframes badgePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.55; }
-        }
+        @keyframes badgePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 
         .badge-sub {
             font-size: 7px;
@@ -719,7 +624,7 @@
             text-transform: uppercase;
         }
 
-        /* ---------- MPESA VIEW (mobile: static flow, no absolute) ---------- */
+        /* ---------- MPESA VIEW (mobile: static flow) ---------- */
         .mpesa-view {
             display: none;
             flex-direction: column;
@@ -727,10 +632,9 @@
             justify-content: center;
             padding: 20px 16px;
             width: 100%;
+            position: relative;
         }
-        .mpesa-view.show {
-            display: flex;
-        }
+        .mpesa-view.show { display: flex; }
 
         .mpesa-panel {
             background: #f4f9f1;
@@ -741,6 +645,7 @@
             max-width: 340px;
             text-align: center;
             box-shadow: 0 8px 24px rgba(67, 176, 42, 0.08);
+            position: relative;
         }
         .mpesa-panel-logo {
             height: 32px;
@@ -748,7 +653,6 @@
             display: block;
             margin: 0 auto 18px;
         }
-
         .mpesa-panel .instr {
             font-size: 13px;
             font-weight: 600;
@@ -772,9 +676,7 @@
             align-items: center;
             padding: 6px 0;
         }
-        .mpesa-preview-row + .mpesa-preview-row {
-            border-top: 1px dashed #d7e7d2;
-        }
+        .mpesa-preview-row + .mpesa-preview-row { border-top: 1px dashed #d7e7d2; }
         .mpesa-preview-row .label {
             font-size: 10px;
             font-weight: 700;
@@ -818,10 +720,7 @@
             transition: opacity 0.4s ease;
             border-radius: 16px;
         }
-        .stk-push.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .stk-push.show { opacity: 1; pointer-events: auto; }
 
         .stk-phone {
             width: 56px;
@@ -862,22 +761,14 @@
             50% { transform: translateY(0) rotate(0); }
             75% { transform: translateY(-3px) rotate(2deg); }
         }
-        .stk-push h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1f4a1a;
-        }
+        .stk-push h3 { font-size: 15px; font-weight: 700; color: #1f4a1a; }
         .stk-push p {
             font-size: 11px;
             color: #4a6b46;
             line-height: 1.6;
             max-width: 240px;
         }
-        .stk-dots {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-        }
+        .stk-dots { display: flex; gap: 6px; margin-top: 6px; }
         .stk-dots span {
             width: 7px;
             height: 7px;
@@ -892,10 +783,8 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* ---------- STATUS (hidden on mobile) ---------- */
-        .status {
-            display: none !important;
-        }
+        /* ---------- STATUS (desktop only) ---------- */
+        .status { display: none !important; }
 
         /* ---------- RESULT OVERLAY ---------- */
         .result-overlay {
@@ -905,9 +794,7 @@
             pointer-events: none;
             overflow: hidden;
         }
-        .result-overlay.show {
-            pointer-events: auto;
-        }
+        .result-overlay.show { pointer-events: auto; }
 
         .result-bg {
             position: absolute;
@@ -919,9 +806,7 @@
             transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
             will-change: transform;
         }
-        .result-overlay.show .result-bg {
-            transform: translateY(0);
-        }
+        .result-overlay.show .result-bg { transform: translateY(0); }
         .result-overlay.success .result-bg {
             background: linear-gradient(160deg, #1fbf88 0%, #21b987 40%, #149a6c 100%);
         }
@@ -953,9 +838,7 @@
             opacity: 0;
             transition: opacity 0.5s ease 0.55s;
         }
-        .result-overlay.show .result-inner {
-            opacity: 1;
-        }
+        .result-overlay.show .result-inner { opacity: 1; }
 
         .result-circle {
             width: 110px;
@@ -991,12 +874,8 @@
         .result-overlay.show .result-circle::after {
             animation: ringSpin 2s linear infinite, ringFadeIn 0.4s ease 0.8s forwards;
         }
-        @keyframes ringSpin {
-            to { transform: rotate(360deg); }
-        }
-        @keyframes ringFadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes ringSpin { to { transform: rotate(360deg); } }
+        @keyframes ringFadeIn { to { opacity: 1; } }
 
         .result-circle svg {
             width: 56px;
@@ -1007,20 +886,12 @@
             stroke-linejoin: round;
             fill: none;
         }
-        .result-circle .tick-path {
-            stroke-dasharray: 60;
-            stroke-dashoffset: 60;
-        }
-        .result-circle .cross-path {
-            stroke-dasharray: 55;
-            stroke-dashoffset: 55;
-        }
+        .result-circle .tick-path { stroke-dasharray: 60; stroke-dashoffset: 60; }
+        .result-circle .cross-path { stroke-dasharray: 55; stroke-dashoffset: 55; }
         .result-overlay.show .result-circle .draw {
             animation: drawPath 0.55s ease-out 1.15s forwards;
         }
-        @keyframes drawPath {
-            to { stroke-dashoffset: 0; }
-        }
+        @keyframes drawPath { to { stroke-dashoffset: 0; } }
 
         .result-inner h2 {
             color: white;
@@ -1075,24 +946,12 @@
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
         }
 
-        .result-overlay.show .result-inner h2 {
-            animation: fadeUp 0.55s ease-out 1.35s forwards;
-        }
-        .result-overlay.show .result-inner .amount-line {
-            animation: fadeUp 0.55s ease-out 1.5s forwards;
-        }
-        .result-overlay.show .result-inner p {
-            animation: fadeUp 0.55s ease-out 1.65s forwards;
-        }
-        .result-overlay.show .result-inner .quote {
-            animation: fadeUp 0.55s ease-out 1.8s forwards;
-        }
-        .result-overlay.show .result-inner .retry-btn {
-            animation: fadeUp 0.55s ease-out 2s forwards;
-        }
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .result-overlay.show .result-inner h2 { animation: fadeUp 0.55s ease-out 1.35s forwards; }
+        .result-overlay.show .result-inner .amount-line { animation: fadeUp 0.55s ease-out 1.5s forwards; }
+        .result-overlay.show .result-inner p { animation: fadeUp 0.55s ease-out 1.65s forwards; }
+        .result-overlay.show .result-inner .quote { animation: fadeUp 0.55s ease-out 1.8s forwards; }
+        .result-overlay.show .result-inner .retry-btn { animation: fadeUp 0.55s ease-out 2s forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
         .confetti-container {
             position: absolute;
@@ -1113,9 +972,7 @@
            Card on RIGHT, Form on LEFT
            ============================================================ */
         @media (min-width: 900px) {
-            body {
-                align-items: center;
-            }
+            body { align-items: center; }
 
             .checkout-window {
                 max-width: 1400px;
@@ -1130,7 +987,6 @@
                 min-height: 100vh;
             }
 
-            /* FORM on the LEFT */
             .checkout-left {
                 order: 0;
                 padding: 48px 56px;
@@ -1141,78 +997,28 @@
                 margin-right: 0;
             }
 
-            .checkout-left h2 {
-                font-size: 22px;
-            }
-            .checkout-left .sub {
-                font-size: 13px;
-                margin-bottom: 22px;
-            }
+            .checkout-left h2 { font-size: 22px; }
+            .checkout-left .sub { font-size: 13px; margin-bottom: 22px; }
+            .back-link { margin-bottom: 20px; }
 
-            .back-link {
-                margin-bottom: 20px;
-            }
+            .amount-row { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .amount-btn { height: 42px; font-size: 12px; border-radius: 9px; }
 
-            .amount-row {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 8px;
-            }
+            .custom-amount-wrap { margin-bottom: 20px; }
+            #customAmount { height: 42px; font-size: 13px; padding-left: 30px; }
+            .custom-amount-wrap .currency { font-size: 13px; left: 14px; }
 
-            .amount-btn {
-                height: 42px;
-                font-size: 12px;
-                border-radius: 9px;
-            }
+            .method-toggle { height: 46px; margin-bottom: 22px; }
+            .method-toggle button { font-size: 12px; }
+            .method-toggle .logo-svg { width: 42px; height: 16px; }
+            .method-toggle .logo-svg.mpesa-svg { width: 56px; height: 18px; }
 
-            .custom-amount-wrap {
-                margin-bottom: 20px;
-            }
-            #customAmount {
-                height: 42px;
-                font-size: 13px;
-                padding-left: 30px;
-            }
-            .custom-amount-wrap .currency {
-                font-size: 13px;
-                left: 14px;
-            }
+            .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-            .method-toggle {
-                height: 46px;
-                margin-bottom: 22px;
-            }
-            .method-toggle button {
-                font-size: 12px;
-            }
-            .method-toggle .logo-svg {
-                width: 42px;
-                height: 16px;
-            }
-            .method-toggle .logo-svg.mpesa-svg {
-                width: 56px;
-                height: 18px;
-            }
+            .field input { height: 42px; font-size: 13px; border-radius: 8px; padding: 0 12px; }
 
-            .form-row {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
+            .pay-button { height: 50px; font-size: 14px; border-radius: 9px; }
 
-            .field input {
-                height: 42px;
-                font-size: 13px;
-                border-radius: 8px;
-                padding: 0 12px;
-            }
-
-            .pay-button {
-                height: 50px;
-                font-size: 14px;
-                border-radius: 9px;
-            }
-
-            /* VISUAL on the RIGHT */
             .checkout-right {
                 order: 0;
                 padding: 40px;
@@ -1222,26 +1028,7 @@
                 position: relative;
             }
 
-            /* On desktop, restore absolute positioning for mpesa view
-               so it sits over the card area, not the form */
-            .mpesa-view {
-                position: absolute;
-                inset: 0;
-                padding: 40px 30px;
-                display: flex;
-                opacity: 0;
-                pointer-events: none;
-                transform: scale(0.95);
-                transition: opacity 0.4s ease, transform 0.4s ease;
-                background: #fff;
-            }
-            .mpesa-view.show {
-                opacity: 1;
-                pointer-events: auto;
-                transform: scale(1);
-            }
-
-            /* Card view also absolute on desktop for cross-fade */
+            /* Desktop: card view absolute for cross-fade */
             .card-view {
                 position: absolute;
                 inset: 0;
@@ -1259,50 +1046,39 @@
                 transform: scale(0.95);
             }
 
-            .card-stage,
-            .card-wrapper {
-                width: 300px;
-                height: 188px;
+            /* Desktop: mpesa view absolute over card area */
+            .mpesa-view {
+                position: absolute;
+                inset: 0;
+                padding: 40px 30px;
+                display: flex;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.95);
+                transition: opacity 0.4s ease, transform 0.4s ease;
+                background: #fff;
+            }
+            .mpesa-view.show {
+                opacity: 1;
+                pointer-events: auto;
+                transform: scale(1);
             }
 
+            .card-stage, .card-wrapper { width: 300px; height: 188px; }
             .card-face { border-radius: 16px; }
-            .card-front,
-            .card-back {
-                padding: 20px;
-                border-radius: 16px;
-            }
+            .card-front, .card-back { padding: 20px; border-radius: 16px; }
 
-            .card-number {
-                font-size: 17px;
-                letter-spacing: 2.4px;
-                margin-top: 26px;
-            }
-            .chip {
-                width: 38px;
-                height: 30px;
-                border-radius: 5px;
-            }
+            .card-number { font-size: 17px; letter-spacing: 2.4px; margin-top: 26px; }
+            .chip { width: 38px; height: 30px; border-radius: 5px; }
             .contactless { font-size: 19px; }
             .platinum { font-size: 10px; letter-spacing: 1.5px; }
-            .card-bottom {
-                left: 20px;
-                right: 20px;
-                bottom: 20px;
-            }
+            .card-bottom { left: 20px; right: 20px; bottom: 20px; }
             .card-info strong { font-size: 10px; letter-spacing: 0.8px; }
             .card-info small { font-size: 7px; letter-spacing: 1px; }
             .card-visa-logo { height: 20px; }
             .card-visa-wrap { padding: 3px 6px; border-radius: 4px; }
-
-            .card-back-strip {
-                height: 42px;
-                margin: -20px -20px 16px -20px;
-            }
-            .card-back-cvv {
-                font-size: 13px;
-                padding: 7px 14px;
-                min-height: 26px;
-            }
+            .card-back-strip { height: 42px; margin: -20px -20px 16px -20px; }
+            .card-back-cvv { font-size: 13px; padding: 7px 14px; min-height: 26px; }
             .card-back-label { font-size: 8px; }
             .card-back-note { font-size: 8px; }
 
@@ -1315,10 +1091,7 @@
             .badge-text { font-size: 11px; letter-spacing: 2.5px; }
             .badge-sub { font-size: 8px; }
 
-            .mpesa-panel {
-                padding: 34px 30px 30px;
-                max-width: 340px;
-            }
+            .mpesa-panel { padding: 34px 30px 30px; max-width: 340px; }
             .mpesa-panel-logo { height: 36px; margin-bottom: 20px; }
             .mpesa-panel .instr { font-size: 13px; }
             .mpesa-preview-row .label { font-size: 10px; }
@@ -1339,9 +1112,9 @@
                 gap: 7px;
                 pointer-events: none;
             }
-            .status.hidden {
-                display: none !important;
-            }
+            .status.hidden { display: none !important; }
+            .status .spinner { display: none; }
+            .status .spinner[style*="display: block"] { display: block !important; }
 
             .result-inner h2 { font-size: clamp(26px, 4.5vw, 40px); }
             .result-inner p { font-size: 14px; }
@@ -1349,66 +1122,28 @@
             .result-circle svg { width: 66px; height: 66px; }
         }
 
-        /* Larger desktop */
         @media (min-width: 1400px) {
-            .checkout-left {
-                max-width: 620px;
-                padding: 56px 72px;
-            }
-            .card-stage,
-            .card-wrapper {
-                width: 340px;
-                height: 213px;
-            }
-            .card-number {
-                font-size: 19px;
-                letter-spacing: 2.8px;
-            }
-            .card-front,
-            .card-back { padding: 24px; }
-            .card-bottom {
-                left: 24px;
-                right: 24px;
-                bottom: 24px;
-            }
+            .checkout-left { max-width: 620px; padding: 56px 72px; }
+            .card-stage, .card-wrapper { width: 340px; height: 213px; }
+            .card-number { font-size: 19px; letter-spacing: 2.8px; }
+            .card-front, .card-back { padding: 24px; }
+            .card-bottom { left: 24px; right: 24px; bottom: 24px; }
             .card-visa-logo { height: 24px; }
-            .card-back-strip {
-                height: 48px;
-                margin: -24px -24px 20px -24px;
-            }
+            .card-back-strip { height: 48px; margin: -24px -24px 20px -24px; }
         }
 
-        /* Very small screens */
         @media (max-width: 380px) {
-            .card-stage,
-            .card-wrapper {
-                width: 250px;
-                height: 157px;
-            }
-            .card-number {
-                font-size: 13px;
-                letter-spacing: 1.6px;
-                margin-top: 18px;
-            }
+            .card-stage, .card-wrapper { width: 250px; height: 157px; }
+            .card-number { font-size: 13px; letter-spacing: 1.6px; margin-top: 18px; }
             .chip { width: 28px; height: 22px; }
             .contactless { font-size: 14px; }
             .platinum { font-size: 8px; letter-spacing: 1px; }
             .card-info strong { font-size: 8px; }
             .card-info small { font-size: 5px; }
             .card-visa-logo { height: 15px; }
-            .card-back-strip {
-                height: 32px;
-                margin: -16px -16px 12px -16px;
-            }
-            .card-back-cvv {
-                font-size: 10px;
-                padding: 5px 10px;
-                min-height: 20px;
-            }
-            .amount-btn {
-                height: 42px;
-                font-size: 12px;
-            }
+            .card-back-strip { height: 32px; margin: -16px -16px 12px -16px; }
+            .card-back-cvv { font-size: 10px; padding: 5px 10px; min-height: 20px; }
+            .amount-btn { height: 42px; font-size: 12px; }
             .field input { height: 42px; font-size: 13px; }
             .pay-button { height: 46px; font-size: 13px; }
             .method-toggle { height: 42px; }
@@ -1545,7 +1280,6 @@
                     </button>
                 </div>
 
-                <!-- CARD FIELDS -->
                 <div class="field-group active" id="cardFields">
                     <div class="field">
                         <label>CARDHOLDER NAME</label>
@@ -1572,7 +1306,6 @@
                     </div>
                 </div>
 
-                <!-- MPESA FIELDS -->
                 <div class="field-group" id="mpesaFields">
                     <div class="field">
                         <label>M-PESA PHONE NUMBER <span class="req">*</span></label>
@@ -1595,7 +1328,6 @@
         </div>
     </div>
 
-    <!-- RESULT OVERLAY -->
     <div class="result-overlay" id="resultOverlay">
         <div class="result-bg"><div class="result-curve"></div></div>
         <div class="result-inner">
@@ -1663,6 +1395,7 @@
         // ---------- Config ----------
         const USD_TO_KES = 130;
         const toKes = (usd) => Math.round(usd * USD_TO_KES);
+        const fromKes = (kes) => kes / USD_TO_KES;
 
         const AMOUNT_THEMES = [
             { min: 0, max: 9.99, name: "sprout", tier: "SPROUT",
@@ -1709,17 +1442,11 @@
         let currentAmount = 50;
         let busy = false;
         let activeReference = null;
-        let timers = [];
+        let pollTimer = null;
         let confettiTimers = [];
 
-        function schedule(fn, ms) {
-            const id = setTimeout(fn, ms);
-            timers.push(id);
-            return id;
-        }
-        function clearTimers() {
-            timers.forEach(clearTimeout);
-            timers = [];
+        function clearPoll() {
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
         }
         function clearConfetti() {
             confettiTimers.forEach(clearTimeout);
@@ -1743,9 +1470,7 @@
             if (d.length < 4) return d.padEnd(4, "•").replace(/(..)(..)/, "$1/$2");
             return d.slice(0, 2) + "/" + d.slice(2);
         }
-        function formatPhone(raw) {
-            return raw.replace(/\D/g, "").slice(0, 10);
-        }
+        function formatPhone(raw) { return raw.replace(/\D/g, "").slice(0, 10); }
 
         // ---------- Live card preview ----------
         function updateCard() {
@@ -1854,7 +1579,7 @@
 
         // ---------- State transitions ----------
         function resetPayment() {
-            clearTimers();
+            clearPoll();
             checkoutWindow.classList.remove("processing", "success");
             cardWrapper.classList.remove("processing", "flipped");
             stkPush.classList.remove("show");
@@ -1862,8 +1587,9 @@
             statusText.textContent = "Ready to donate";
             statusText.style.color = "#222";
             payButton.disabled = false;
-            updatePayButton();
             busy = false;
+            activeReference = null;
+            updatePayButton();
         }
 
         function processingState(label) {
@@ -1920,6 +1646,7 @@
         }
 
         function showSuccess(amountUsd) {
+            clearPoll();
             stkPush.classList.remove("show");
             checkoutWindow.classList.remove("processing");
             checkoutWindow.classList.add("success");
@@ -1947,6 +1674,7 @@
         }
 
         function showFailure(reason) {
+            clearPoll();
             stkPush.classList.remove("show");
             checkoutWindow.classList.remove("processing", "success");
             cardWrapper.classList.remove("processing", "flipped");
@@ -1966,7 +1694,7 @@
                 <line class="cross-path draw" x1="34" y1="16" x2="16" y2="34" />
             `;
             resultTitle.textContent = "Donation couldn't be completed";
-            resultAmount.textContent = `$${currentAmount.toFixed(2)} not charged`;
+            resultAmount.textContent = "No charge was made";
             resultMsg.textContent = reason || "Something went wrong. You were not charged.";
             resultQuote.textContent = "";
             retryBtn.style.display = "inline-block";
@@ -2001,7 +1729,7 @@
             if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
             resetPayment();
             clearConfetti();
-            schedule(() => processingState("Sending STK Push..."), 100);
+            setTimeout(() => processingState("Sending STK Push..."), 100);
             const amountKes = toKes(currentAmount);
             try {
                 const res = await fetch("/api/payments/paystack/initialize", {
@@ -2029,17 +1757,12 @@
                     const res = await fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`);
                     const data = await res.json();
                     if (!res.ok) continue;
-                    if (data.paid) {
-                        showSuccess(displayUsd);
-                        return;
-                    }
+                    if (data.paid) { showSuccess(displayUsd); return; }
                     if (["failed", "abandoned", "reversed"].includes(String(data.status || "").toLowerCase())) {
                         showFailure(`M-Pesa payment ${data.status}. Please try again.`);
                         return;
                     }
-                } catch (e) {
-                    console.warn("poll error:", e.message);
-                }
+                } catch (e) { console.warn("poll error:", e.message); }
             }
             showFailure("STK Push timed out. If you entered your PIN, please check back in a moment.");
         }
@@ -2057,7 +1780,7 @@
             if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
             resetPayment();
             clearConfetti();
-            schedule(() => processingState("Charging card securely..."), 100);
+            setTimeout(() => processingState("Charging card securely..."), 100);
             const amountKes = toKes(currentAmount);
             try {
                 const res = await fetch("/api/payments/paystack/charge", {
@@ -2085,10 +1808,29 @@
 
         async function handleChargeResponse(data) {
             const status = String(data.status || "").toLowerCase();
+
             if (status === "success" || data.paid) {
                 showSuccess(currentAmount);
                 return;
             }
+
+            // Paystack wants the user to open a URL (3DS, redirect, or bank auth)
+            if (status === "open_url") {
+                if (data.authorization_url) {
+                    window.location.href = data.authorization_url;
+                    return;
+                }
+                // No URL provided — poll to catch a settlement
+                processingState("Awaiting bank confirmation...");
+                return pollCardPayment(data.reference, currentAmount);
+            }
+
+            // Pending / pay_offline — Paystack will notify us later
+            if (status === "pending" || status === "pay_offline" || status === "ongoing") {
+                processingState("Awaiting confirmation...");
+                return pollCardPayment(data.reference, currentAmount);
+            }
+
             if (status === "send_pin") {
                 const pin = prompt("Enter your card PIN (4 digits):");
                 if (!pin) return showFailure("PIN required");
@@ -2109,11 +1851,28 @@
                 if (!addr) return showFailure("Address required");
                 return submitCode("address", addr);
             }
-            if (status === "open_url" && data.authorization_url) {
-                window.location.href = data.authorization_url;
-                return;
-            }
+
             showFailure(data.message || `Payment status: ${status}`);
+        }
+
+        async function pollCardPayment(reference, displayUsd) {
+            const startTime = Date.now();
+            const MAX_WAIT_MS = 90 * 1000;
+            const INTERVAL = 3000;
+            while (Date.now() - startTime < MAX_WAIT_MS) {
+                await new Promise((r) => setTimeout(r, INTERVAL));
+                try {
+                    const res = await fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`);
+                    const data = await res.json();
+                    if (!res.ok) continue;
+                    if (data.paid) { showSuccess(displayUsd); return; }
+                    if (["failed", "abandoned", "reversed"].includes(String(data.status || "").toLowerCase())) {
+                        showFailure(`Payment ${data.status}. Please try again.`);
+                        return;
+                    }
+                } catch (e) { console.warn("poll error:", e.message); }
+            }
+            showFailure("Payment timed out. If you completed 3DS, please check back shortly.");
         }
 
         async function submitCode(type, value) {
@@ -2197,9 +1956,9 @@
         });
 
         window.addEventListener("beforeunload", () => {
-            clearTimers();
+            clearPoll();
             clearConfetti();
         });
     </script>
 </body>
-</html>
+    </html>
