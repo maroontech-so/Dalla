@@ -5,7 +5,6 @@ const compression = require("compression");
 const crypto = require("crypto");
 const Database = require("better-sqlite3");
 const path = require("path");
-const fs = require("fs");
 
 const app = express();
 
@@ -15,13 +14,9 @@ const APP_URL = process.env.APP_URL;
 const CURRENCY = String(process.env.CURRENCY || "KES").toUpperCase();
 const MIN_PAYMENT_KES = Number(process.env.MIN_PAYMENT_KES || 10);
 const MAX_PAYMENT_KES = Number(process.env.MAX_PAYMENT_KES || 1000000);
-const PAYSTACK_SUBACCOUNT = String(
-  process.env.PAYSTACK_SUBACCOUNT || "",
-).trim();
+const PAYSTACK_SUBACCOUNT = String(process.env.PAYSTACK_SUBACCOUNT || "").trim();
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "").trim();
-const ADMIN_SESSION_SECRET = String(
-  process.env.ADMIN_SESSION_SECRET || "",
-).trim();
+const ADMIN_SESSION_SECRET = String(process.env.ADMIN_SESSION_SECRET || "").trim();
 
 if (!PAYSTACK_SECRET_KEY) throw new Error("PAYSTACK_SECRET_KEY is missing");
 if (!APP_URL) throw new Error("APP_URL is missing");
@@ -186,12 +181,11 @@ db.exec(`
 `);
 
 /* =========================================================
-   EXPRESS — PERFORMANCE FIRST
+   EXPRESS
 ========================================================= */
 
 app.use(compression({ threshold: 512 }));
 
-// JSON parser — keep rawBody for webhook signature verification
 app.use(
   express.json({
     limit: "100kb",
@@ -227,13 +221,9 @@ function sendHtml(res, filename) {
 ========================================================= */
 
 const normalizeEmail = (e) =>
-  String(e || "")
-    .trim()
-    .toLowerCase();
+  String(e || "").trim().toLowerCase();
 const cleanString = (v, max = 200) =>
-  String(v || "")
-    .trim()
-    .slice(0, max);
+  String(v || "").trim().slice(0, max);
 const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const moneyToSubunit = (a) => {
   const v = Number(a);
@@ -254,52 +244,13 @@ function timingSafeEqualHex(a, b) {
 function normalizeKenyanPhone(raw) {
   const digits = String(raw || "").replace(/\D/g, "");
   if (!digits) return "";
-  if (digits.startsWith("0") && digits.length === 10)
-    return "254" + digits.slice(1);
+  if (digits.startsWith("0") && digits.length === 10) return "254" + digits.slice(1);
   if (digits.length === 9) return "254" + digits;
   if (digits.startsWith("254") && digits.length === 12) return digits;
-  if (digits.startsWith("2540") && digits.length === 13)
-    return "254" + digits.slice(4);
+  if (digits.startsWith("2540") && digits.length === 13) return "254" + digits.slice(4);
   return digits;
 }
 const isValidKenyanPhone = (p) => /^254(7|1)\d{8}$/.test(p);
-
-const normalizeCardNumber = (raw) => String(raw || "").replace(/\D/g, "");
-function isValidCardNumber(num) {
-  if (!/^\d{13,19}$/.test(num)) return false;
-  let sum = 0,
-    alt = false;
-  for (let i = num.length - 1; i >= 0; i--) {
-    let n = parseInt(num[i], 10);
-    if (alt) {
-      n *= 2;
-      if (n > 9) n -= 9;
-    }
-    sum += n;
-    alt = !alt;
-  }
-  return sum % 10 === 0;
-}
-function normalizeExpiry(raw) {
-  const d = String(raw || "").replace(/\D/g, "");
-  if (d.length < 4) return { month: "", year: "" };
-  const month = d.slice(0, 2);
-  let year = d.slice(2, 4);
-  if (year.length === 2) year = "20" + year;
-  return { month, year };
-}
-function isValidExpiry(month, year) {
-  if (!/^\d{2}$/.test(month) || !/^\d{4}$/.test(year)) return false;
-  const m = Number(month),
-    y = Number(year);
-  if (m < 1 || m > 12) return false;
-  const now = new Date();
-  const cy = now.getFullYear(),
-    cm = now.getMonth() + 1;
-  if (y < cy) return false;
-  if (y === cy && m < cm) return false;
-  return y <= cy + 30;
-}
 
 function buildCallbackUrl() {
   return `${APP_URL.replace(/\/$/, "")}/payment/callback`;
@@ -311,10 +262,7 @@ function buildCallbackUrl() {
 
 function signAdminToken(expiresAt) {
   const payload = `admin.${expiresAt}`;
-  const sig = crypto
-    .createHmac("sha256", ADMIN_SESSION_SECRET)
-    .update(payload)
-    .digest("hex");
+  const sig = crypto.createHmac("sha256", ADMIN_SESSION_SECRET).update(payload).digest("hex");
   return `${payload}.${sig}`;
 }
 function verifyAdminToken(token) {
@@ -336,8 +284,7 @@ function requireAdmin(req, res, next) {
     .map((c) => c.trim())
     .find((c) => c.startsWith("admin_session="))
     ?.split("=")[1];
-  if (!verifyAdminToken(token))
-    return res.status(401).json({ error: "Unauthorized" });
+  if (!verifyAdminToken(token)) return res.status(401).json({ error: "Unauthorized" });
   next();
 }
 
@@ -392,9 +339,7 @@ function getOrCreateCustomer(email, name, phone) {
     const r = db
       .prepare(`INSERT INTO customers (email, name, phone) VALUES (?, ?, ?)`)
       .run(email, name || null, phone || null);
-    c = db
-      .prepare(`SELECT * FROM customers WHERE id = ?`)
-      .get(r.lastInsertRowid);
+    c = db.prepare(`SELECT * FROM customers WHERE id = ?`).get(r.lastInsertRowid);
   } else {
     db.prepare(
       `
@@ -406,9 +351,7 @@ function getOrCreateCustomer(email, name, phone) {
     `,
     ).run(name || null, phone || null, c.id);
   }
-  const w = db
-    .prepare(`SELECT id FROM wallets WHERE customer_id = ?`)
-    .get(c.id);
+  const w = db.prepare(`SELECT id FROM wallets WHERE customer_id = ?`).get(c.id);
   if (!w)
     db.prepare(
       `INSERT INTO wallets (customer_id, balance, currency) VALUES (?, 0, ?)`,
@@ -435,9 +378,7 @@ const creditSuccessfulPayment = db.transaction((d) => {
   } = d;
 
   const existing = db
-    .prepare(
-      `SELECT * FROM transactions WHERE reference = ? AND status = 'success'`,
-    )
+    .prepare(`SELECT * FROM transactions WHERE reference = ? AND status = 'success'`)
     .get(reference);
   if (existing) return { alreadyProcessed: true, transaction: existing };
 
@@ -498,16 +439,12 @@ const creditSuccessfulPayment = db.transaction((d) => {
 
   return {
     alreadyProcessed: false,
-    transaction: db
-      .prepare(`SELECT * FROM transactions WHERE id = ?`)
-      .get(tr.lastInsertRowid),
+    transaction: db.prepare(`SELECT * FROM transactions WHERE id = ?`).get(tr.lastInsertRowid),
   };
 });
 
 /* =========================================================
-   M-PESA INITIALIZE
-   (uses /charge with mobile_money channel — works in live mode;
-    in test mode Paystack accepts the same payload)
+   M-PESA INITIALIZE  → /charge (mobile_money)
 ========================================================= */
 
 app.post("/api/payments/paystack/initialize", async (req, res) => {
@@ -533,9 +470,7 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
     if (!isValidKenyanPhone(phone))
       return res.status(400).json({ error: "Enter a valid Safaricom number" });
     if (amountKes > 250000)
-      return res
-        .status(400)
-        .json({ error: "M-Pesa limit is KES 250,000 per transaction" });
+      return res.status(400).json({ error: "M-Pesa limit is KES 250,000 per transaction" });
 
     const amountSubunit = moneyToSubunit(amountKes);
     const customer = getOrCreateCustomer(email, name, phone);
@@ -608,24 +543,20 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
     });
   } catch (e) {
     console.error("MPESA INIT ERROR:", e.response || e.message);
-    res
-      .status(502)
-      .json({ error: e.message || "Unable to start M-Pesa payment" });
+    res.status(502).json({ error: e.message || "Unable to start M-Pesa payment" });
   }
 });
 
 /* =========================================================
-   CARD CHARGE
+   CARD INITIALIZE  → /transaction/initialize (hosted checkout)
+   This is the ONLY reliable way to handle 3DS on mobile.
 ========================================================= */
 
-app.post("/api/payments/paystack/charge", async (req, res) => {
+app.post("/api/payments/paystack/card/initialize", async (req, res) => {
   try {
     const email = normalizeEmail(req.body.email);
     const name = cleanString(req.body.name, 100);
     const amountKes = Number(req.body.amount_kes ?? req.body.amount);
-    const cardNumber = normalizeCardNumber(req.body.card_number);
-    const cvv = cleanString(req.body.cvv, 4);
-    const expiryRaw = cleanString(req.body.expiry, 10);
 
     if (!isValidEmail(email))
       return res.status(400).json({ error: "Enter a valid email" });
@@ -638,14 +569,6 @@ app.post("/api/payments/paystack/charge", async (req, res) => {
         error: `Amount must be between KES ${MIN_PAYMENT_KES} and KES ${MAX_PAYMENT_KES}`,
       });
     }
-    if (!isValidCardNumber(cardNumber))
-      return res.status(400).json({ error: "Enter a valid card number" });
-    if (!/^\d{3,4}$/.test(cvv))
-      return res.status(400).json({ error: "Enter a valid CVV" });
-
-    const { month, year } = normalizeExpiry(expiryRaw);
-    if (!isValidExpiry(month, year))
-      return res.status(400).json({ error: "Enter a valid expiry (MM/YY)" });
 
     const amountSubunit = moneyToSubunit(amountKes);
     const customer = getOrCreateCustomer(email, name, "");
@@ -658,12 +581,7 @@ app.post("/api/payments/paystack/charge", async (req, res) => {
       currency: CURRENCY,
       reference,
       callback_url: callbackUrl,
-      card: {
-        number: cardNumber,
-        cvv,
-        expiry_month: month,
-        expiry_year: year,
-      },
+      channels: ["card"],
       metadata: {
         customer_id: customer.id,
         email,
@@ -674,86 +592,53 @@ app.post("/api/payments/paystack/charge", async (req, res) => {
     };
     if (PAYSTACK_SUBACCOUNT) payload.subaccount = PAYSTACK_SUBACCOUNT;
 
-    const pr = await paystackRequest("/charge", {
+    const pr = await paystackRequest("/transaction/initialize", {
       method: "POST",
       body: JSON.stringify(payload),
     });
     if (!pr.status || !pr.data)
-      throw new Error("Paystack did not return charge data");
+      throw new Error("Paystack did not return initialize data");
     const data = pr.data;
 
-    const result = db
-      .prepare(
-        `
+    db.prepare(
+      `
       INSERT INTO payment_attempts (
         customer_id, reference, provider, email, amount, currency,
         channel, status, authorization_url, access_code, metadata
       ) VALUES (?, ?, 'paystack', ?, ?, ?, 'card', ?, ?, ?, ?)
     `,
-      )
-      .run(
-        customer.id,
-        reference,
-        email,
-        amountSubunit,
-        CURRENCY,
-        data.status || "initialized",
-        data.authorization_url || null,
-        data.access_code || null,
-        JSON.stringify({ customer_id: customer.id, name, method: "card" }),
-      );
-
-    const paymentAttemptId = result.lastInsertRowid;
-
-    if (data.status === "success") {
-      const credit = creditSuccessfulPayment({
-        customerId: customer.id,
-        reference,
-        providerTransactionId: data.id,
-        amount: Number(data.amount),
-        currency: data.currency,
-        paymentAttemptId,
-        paymentMethod:
-          data.authorization?.card_type ||
-          data.authorization?.brand ||
-          "card",
-        channel: data.channel || "card",
-        gatewayResponse: data.gateway_response,
-        metadata: JSON.stringify(data.metadata || {}),
-      });
-      if (data.authorization?.authorization_code) {
-        db.prepare(
-          `UPDATE payment_attempts SET authorization_code = ? WHERE id = ?`,
-        ).run(data.authorization.authorization_code, paymentAttemptId);
-      }
-      return res.json({
-        success: true,
-        reference,
-        status: "success",
-        paid: true,
-        amount_kes: subunitToMoney(data.amount),
-        currency: data.currency,
-        alreadyProcessed: credit.alreadyProcessed,
-      });
-    }
+    ).run(
+      customer.id,
+      reference,
+      email,
+      amountSubunit,
+      CURRENCY,
+      "initialized",
+      data.authorization_url || null,
+      data.access_code || null,
+      JSON.stringify({ customer_id: customer.id, name, method: "card" }),
+    );
 
     res.json({
       success: true,
+      method: "card",
       reference,
-      status: data.status,
+      status: "initialized",
       paid: false,
-      display_text: data.display_text || null,
-      message: data.message || null,
-      authorization_url: data.authorization_url || null,
+      authorization_url: data.authorization_url,
+      access_code: data.access_code,
+      amount_kes: amountKes,
+      currency: CURRENCY,
     });
   } catch (e) {
-    console.error("CARD CHARGE ERROR:", e.response || e.message);
-    res.status(502).json({ error: e.message || "Unable to charge card" });
+    console.error("CARD INIT ERROR:", e.response || e.message);
+    res.status(502).json({ error: e.message || "Unable to start card payment" });
   }
 });
 
 /* =========================================================
    SUBMIT PIN / OTP / BIRTHDAY / ADDRESS
+   (only used if you ever use /charge again — kept for safety)
 ========================================================= */
 
 app.post("/api/payments/paystack/submit", async (req, res) => {
@@ -834,6 +719,7 @@ app.post("/api/payments/paystack/submit", async (req, res) => {
       display_text: data.display_text || null,
       message: data.message || null,
       authorization_url: data.authorization_url || null,
+      access_code: data.access_code || null,
     });
   } catch (e) {
     console.error("SUBMIT ERROR:", e.response || e.message);
@@ -862,16 +748,12 @@ app.get("/api/payments/paystack/verify/:reference", async (req, res) => {
 
     const amountMatches = Number(p.amount) === Number(attempt.amount);
     const currencyMatches =
-      String(p.currency).toUpperCase() ===
-      String(attempt.currency).toUpperCase();
+      String(p.currency).toUpperCase() === String(attempt.currency).toUpperCase();
+
     if (!amountMatches)
-      return res
-        .status(400)
-        .json({ error: "Amount mismatch", status: p.status });
+      return res.status(400).json({ error: "Amount mismatch", status: p.status });
     if (!currencyMatches)
-      return res
-        .status(400)
-        .json({ error: "Currency mismatch", status: p.status });
+      return res.status(400).json({ error: "Currency mismatch", status: p.status });
 
     if (p.status === "success") {
       const credit = creditSuccessfulPayment({
@@ -960,8 +842,7 @@ app.post("/webhooks/paystack", async (req, res) => {
       if (attempt) {
         const amountMatches = Number(p.amount) === Number(attempt.amount);
         const currencyMatches =
-          String(p.currency).toUpperCase() ===
-          String(attempt.currency).toUpperCase();
+          String(p.currency).toUpperCase() === String(attempt.currency).toUpperCase();
         if (amountMatches && currencyMatches) {
           creditSuccessfulPayment({
             customerId: attempt.customer_id,
@@ -971,9 +852,7 @@ app.post("/webhooks/paystack", async (req, res) => {
             currency: p.currency,
             paymentAttemptId: attempt.id,
             paymentMethod:
-              p.authorization?.card_type ||
-              p.authorization?.brand ||
-              "card",
+              p.authorization?.card_type || p.authorization?.brand || "card",
             channel: p.channel,
             gatewayResponse: p.gateway_response,
             metadata: JSON.stringify(p.metadata || {}),
@@ -1144,7 +1023,10 @@ app.get("/api/transactions", (req, res) => {
 
 app.get("/payment/callback", (req, res) => {
   const reference = cleanString(req.query.reference, 100);
-  res.redirect(`/pay?reference=${encodeURIComponent(reference)}`);
+  const method = cleanString(req.query.method || "", 20);
+  const qs = new URLSearchParams({ reference });
+  if (method) qs.set("method", method);
+  res.redirect(`/pay?${qs.toString()}`);
 });
 
 app.get("/", (req, res) => sendHtml(res, "index.html"));
