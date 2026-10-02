@@ -1,233 +1,1192 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Donate — Dalla Community Hub</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Donate — Dalla Community Hub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+        :root {
+            --blue: #1687e8;
+            --green: #21b987;
+            --mpesa: #43b02a;
+            --mpesa-dark: #1f7a17;
+            --gray-bg: #ffffff;
+            --text: #111;
+            --red: #e5484d;
+            --neon: #39ff88;
+        }
 
-            :root {
-                --blue: #1687e8;
-                --green: #21b987;
-                --mpesa: #43b02a;
-                --mpesa-dark: #1f7a17;
-                --gray-bg: #ffffff;
-                --text: #111;
-                --red: #e5484d;
-                --neon: #39ff88;
-            }
+        html, body {
+            height: 100%;
+        }
 
-            html,
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #fff;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .checkout-window {
+            width: 100%;
+            min-height: 100vh;
+            background: white;
+            border-radius: 0;
+            overflow: visible;
+            box-shadow: none;
+            position: relative;
+        }
+
+        .checkout-content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        /* ---------- MOBILE FIRST (default) ---------- */
+        .checkout-right {
+            order: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px 8px;
+            min-height: auto;
+            position: relative;
+            width: 100%;
+        }
+
+        .checkout-left {
+            order: 2;
+            padding: 8px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 100%;
+            margin-left: 0;
+        }
+
+        .checkout-left h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+        .checkout-left .sub {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            text-decoration: none;
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover {
+            color: #3266c5;
+        }
+
+        /* Amount buttons – fit screen */
+        .amount-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        .amount-btn {
+            height: 48px;
+            border: 1px solid #dcdde3;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            padding: 0 4px;
+        }
+        .amount-btn:hover {
+            border-color: #b8bccb;
+            background: #f7f8fc;
+        }
+        .amount-btn.active {
+            background: #1d4fb4;
+            border-color: #1d4fb4;
+            color: white;
+            box-shadow: 0 4px 12px rgba(29, 79, 180, 0.25);
+        }
+        .checkout-window.mpesa-mode .amount-btn.active {
+            background: var(--mpesa-dark);
+            border-color: var(--mpesa-dark);
+            box-shadow: 0 4px 12px rgba(67, 176, 42, 0.25);
+        }
+
+        .custom-amount-wrap {
+            position: relative;
+            margin-bottom: 18px;
+            width: 100%;
+        }
+        .custom-amount-wrap .currency {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            pointer-events: none;
+        }
+        #customAmount {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #dcdde3;
+            border-radius: 10px;
+            padding: 0 12px 0 32px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            outline: none;
+            transition: border 0.25s ease, box-shadow 0.25s ease;
+            background: white;
+        }
+        #customAmount:focus {
+            border-color: #3266c5;
+            box-shadow: 0 0 0 3px rgba(50, 102, 197, 0.08);
+        }
+
+        .method-toggle {
+            position: relative;
+            display: flex;
+            background: #eef0f5;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 22px;
+            height: 48px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+            width: 100%;
+        }
+        .method-toggle .slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: white;
+            border-radius: 9px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+            transition: transform 0.35s cubic-bezier(0.4, 0.1, 0.2, 1);
+            z-index: 1;
+        }
+        .method-toggle.mpesa .slider {
+            transform: translateX(100%);
+        }
+        .method-toggle button {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+            border: 0;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border-radius: 9px;
+            transition: color 0.3s ease;
+            letter-spacing: 0.2px;
+            padding: 0 4px;
+        }
+        .method-toggle button.active {
+            color: #111;
+        }
+        .method-toggle .logo-svg {
+            width: 38px;
+            height: 15px;
+            display: block;
+        }
+        .method-toggle .logo-svg.mpesa-svg {
+            width: 52px;
+            height: 17px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+        }
+
+        .field {
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .field label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #454545;
+            letter-spacing: 0.4px;
+        }
+        .field label .req {
+            color: var(--red);
+            margin-left: 2px;
+        }
+        .field input {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #dcdde3;
+            border-radius: 10px;
+            padding: 0 14px;
+            background: white;
+            color: #222;
+            outline: none;
+            font-size: 14px;
+            transition: border 0.25s ease, box-shadow 0.25s ease;
+        }
+        .field input::placeholder {
+            color: #b8bcc7;
+            font-weight: 500;
+        }
+        .field input:focus {
+            border-color: #3266c5;
+            box-shadow: 0 0 0 3px rgba(50, 102, 197, 0.08);
+        }
+
+        .field-group {
+            display: none;
+            width: 100%;
+        }
+        .field-group.active {
+            display: block;
+        }
+        .format-hint {
+            font-size: 10px;
+            color: #888;
+            margin-top: 5px;
+            letter-spacing: 0.2px;
+        }
+
+        .pay-button {
+            width: 100%;
+            height: 52px;
+            border: 0;
+            border-radius: 10px;
+            background: #1d4fb4;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 5px 12px rgba(29, 79, 180, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+            letter-spacing: 0.2px;
+        }
+        .pay-button.mpesa-mode {
+            background: var(--mpesa-dark);
+            box-shadow: 0 5px 12px rgba(67, 176, 42, 0.25);
+        }
+        .pay-button.mpesa-mode:hover {
+            box-shadow: 0 8px 18px rgba(67, 176, 42, 0.35);
+        }
+        .pay-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(29, 79, 180, 0.23);
+        }
+        .pay-button:active {
+            transform: scale(0.98);
+        }
+        .pay-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+        .pay-button:disabled:hover {
+            transform: none;
+        }
+
+        /* ---------- CARD STYLES (mobile first) ---------- */
+        .card-view {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .card-view.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            position: absolute;
+            inset: 0;
+        }
+
+        .card-stage {
+            position: relative;
+            width: 280px;
+            height: 176px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.22)) drop-shadow(0 6px 8px rgba(0, 0, 0, 0.14));
+            margin: 0 auto;
+        }
+
+        .neon-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 20px;
+            padding: 3px;
+            background: conic-gradient(from var(--neon-angle, 0deg),
+                transparent 0deg, transparent 240deg,
+                rgba(57, 255, 136, 0.25) 270deg,
+                var(--neon) 320deg, #b8ffd6 340deg,
+                var(--neon) 360deg);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        .card-wrapper.processing + .neon-ring {
+            opacity: 1;
+            animation: neonSpin 1.6s linear infinite;
+        }
+
+        @property --neon-angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+        @keyframes neonSpin {
+            to { --neon-angle: 360deg; }
+        }
+
+        .neon-halo {
+            position: absolute;
+            inset: -20px;
+            border-radius: 28px;
+            background: radial-gradient(ellipse at center, rgba(57, 255, 136, 0.35) 0%, transparent 65%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            filter: blur(8px);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .card-wrapper.processing + .neon-ring + .neon-halo {
+            opacity: 1;
+            animation: haloPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes haloPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .card-wrapper {
+            position: relative;
+            width: 280px;
+            height: 176px;
+            transform-style: preserve-3d;
+            transition: transform 0.9s cubic-bezier(0.4, 0.1, 0.2, 1);
+            z-index: 1;
+        }
+        .card-wrapper.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            inset: 0;
+            padding: 18px;
+            color: white;
+            border-radius: 14px;
+            transition: background 0.55s ease;
+        }
+        .card-front::before,
+        .card-back::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 3px);
+            mix-blend-mode: overlay;
+            opacity: 0.55;
+            z-index: 1;
+        }
+        .card-front::after,
+        .card-back::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+            background-size: 160px 160px;
+            mix-blend-mode: overlay;
+            opacity: 0.18;
+            z-index: 2;
+        }
+        .face-vignette {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.14) 0%, transparent 45%), radial-gradient(120% 90% at 90% 120%, rgba(0, 0, 0, 0.35) 0%, transparent 55%), linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%, rgba(0, 0, 0, 0.12) 100%);
+            z-index: 3;
+        }
+        .face-streak {
+            position: absolute;
+            top: -60%;
+            left: -30%;
+            width: 60%;
+            height: 220%;
+            pointer-events: none;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.09) 45%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.09) 55%, transparent 100%);
+            transform: rotate(18deg);
+            filter: blur(6px);
+            z-index: 4;
+            opacity: 0.8;
+        }
+
+        .card-front { overflow: hidden; }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+        }
+        .chip {
+            width: 34px;
+            height: 26px;
+            border-radius: 4px;
+            position: relative;
+            background: linear-gradient(135deg, #f6e6a4 0%, #d4b04a 22%, #f7e79f 48%, #b88b28 74%, #e8cf6b 100%);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+        .chip::before {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, transparent 0 31%, rgba(0, 0, 0, 0.45) 31% 33%, transparent 33% 65%, rgba(0, 0, 0, 0.45) 65% 67%, transparent 67% 100%), linear-gradient(180deg, transparent 0 46%, rgba(0, 0, 0, 0.45) 46% 54%, transparent 54% 100%);
+            pointer-events: none;
+        }
+        .chip::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, transparent 35%);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .contactless {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-left: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .platinum {
+            font-size: 9px;
+            letter-spacing: 1.3px;
+            font-weight: 800;
+            opacity: 0.9;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18), 0 -1px 0 rgba(0, 0, 0, 0.4);
+            font-family: "SF Mono", "Menlo", monospace;
+        }
+        .card-number {
+            margin-top: 22px;
+            font-family: "SF Mono", "Menlo", "Consolas", monospace;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 5;
+            min-height: 18px;
+            color: rgba(255, 255, 255, 0.55);
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.15), 0 -1px 1px rgba(0, 0, 0, 0.55);
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+        .card-number.filled {
+            color: #fff;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.55), 0 2px 2px rgba(0, 0, 0, 0.35);
+        }
+        .card-bottom {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            z-index: 5;
+        }
+        .card-info small {
+            display: block;
+            font-size: 6px;
+            opacity: 0.7;
+            margin-bottom: 3px;
+            letter-spacing: 1px;
+            font-weight: 700;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+        }
+        .card-info strong {
+            font-size: 9px;
+            letter-spacing: 0.8px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.55);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 -1px 0 rgba(0, 0, 0, 0.55);
+            transition: color 0.2s ease;
+        }
+        .card-info strong.filled {
+            color: #fff;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.55);
+        }
+        .card-visa-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(200, 230, 255, 0.12) 25%, rgba(255, 220, 240, 0.14) 50%, rgba(220, 255, 230, 0.12) 75%, rgba(255, 240, 200, 0.18) 100%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 2px rgba(0, 0, 0, 0.35);
+        }
+        .card-visa-wrap::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.14) 0 3px, transparent 3px 6px);
+            mix-blend-mode: overlay;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .card-visa-logo {
+            height: 18px;
+            width: auto;
+            display: block;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+        }
+        .card-back-strip {
+            height: 38px;
+            background: linear-gradient(180deg, #000 0%, #161616 45%, #0a0a0a 100%);
+            margin: -18px -18px 14px -18px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 5;
+        }
+        .card-back-label {
+            font-size: 7px;
+            letter-spacing: 1px;
+            opacity: 0.75;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 5;
+            font-weight: 700;
+        }
+        .card-back-cvv {
+            background: linear-gradient(180deg, #fafafa 0%, #e6e6e6 100%);
+            color: #111;
+            font-family: "SF Mono", "Menlo", monospace;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-align: right;
+            letter-spacing: 3px;
+            min-height: 24px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.35);
+            position: relative;
+            z-index: 5;
+        }
+        .card-back-note {
+            margin-top: auto;
+            font-size: 7px;
+            opacity: 0.6;
+            line-height: 1.5;
+            position: relative;
+            z-index: 5;
+            letter-spacing: 0.3px;
+        }
+
+        .processing-badge {
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 20, 10, 0.6);
+            backdrop-filter: blur(3px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 20px;
+            gap: 8px;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border-radius: 14px;
+        }
+        .card-wrapper.processing .processing-badge {
+            opacity: 1;
+        }
+
+        .badge-spinner {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid rgba(57, 255, 136, 0.2);
+            border-top-color: var(--neon);
+            border-right-color: var(--neon);
+            animation: badgeSpin 0.9s linear infinite;
+            box-shadow: 0 0 20px rgba(57, 255, 136, 0.7);
+        }
+        @keyframes badgeSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .badge-text {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2.2px;
+            color: var(--neon);
+            text-shadow: 0 0 12px rgba(57, 255, 136, 0.85), 0 0 24px rgba(57, 255, 136, 0.45);
+            animation: badgePulse 1.3s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        .badge-sub {
+            font-size: 7px;
+            color: rgba(255, 255, 255, 0.75);
+            letter-spacing: 1.2px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* ---------- MPESA VIEW (mobile) ---------- */
+        .mpesa-view {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .mpesa-view.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        .mpesa-panel {
+            background: #f4f9f1;
+            border: 1px solid #e2efe0;
+            border-radius: 16px;
+            padding: 28px 20px 24px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(67, 176, 42, 0.08);
+        }
+        .mpesa-panel-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            margin: 0 auto 18px;
+        }
+
+        .mpesa-panel .instr {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .mpesa-preview {
+            background: white;
+            border: 1px solid #e2efe0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-align: left;
+            margin-bottom: 6px;
+            box-shadow: inset 0 1px 3px rgba(67, 176, 42, 0.05);
+        }
+        .mpesa-preview-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+        .mpesa-preview-row + .mpesa-preview-row {
+            border-top: 1px dashed #d7e7d2;
+        }
+        .mpesa-preview-row .label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #6a8a64;
+            letter-spacing: 0.5px;
+        }
+        .mpesa-preview-row .value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f4a1a;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .mpesa-preview-row .value.empty {
+            color: #b8c7b4;
+            font-weight: 500;
+            font-style: italic;
+            font-family: inherit;
+        }
+
+        .stk-push {
+            position: absolute;
+            inset: 0;
+            background: rgba(244, 249, 241, 0.97);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            color: #1f4a1a;
+            padding: 30px;
+            text-align: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .stk-push.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .stk-phone {
+            width: 56px;
+            height: 94px;
+            border: 3px solid var(--mpesa);
+            border-radius: 12px;
+            position: relative;
+            margin-bottom: 6px;
+            animation: phoneBuzz 1.2s ease-in-out infinite;
+        }
+        .stk-phone::before {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 3px;
+            background: var(--mpesa);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+        .stk-phone::after {
+            content: "";
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            border: 2px solid var(--mpesa);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        @keyframes phoneBuzz {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            25% { transform: translateY(-3px) rotate(-2deg); }
+            50% { transform: translateY(0) rotate(0); }
+            75% { transform: translateY(-3px) rotate(2deg); }
+        }
+        .stk-push h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1f4a1a;
+        }
+        .stk-push p {
+            font-size: 11px;
+            color: #4a6b46;
+            line-height: 1.6;
+            max-width: 240px;
+        }
+        .stk-dots {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .stk-dots span {
+            width: 7px;
+            height: 7px;
+            background: var(--mpesa);
+            border-radius: 50%;
+            animation: dotPulse 1.2s ease-in-out infinite;
+        }
+        .stk-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .stk-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.25; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* ---------- STATUS (hidden on mobile) ---------- */
+        .status {
+            display: none !important;
+        }
+
+        /* ---------- RESULT OVERLAY ---------- */
+        .result-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .result-overlay.show {
+            pointer-events: auto;
+        }
+
+        .result-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 130%;
+            transform: translateY(100%);
+            transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+            will-change: transform;
+        }
+        .result-overlay.show .result-bg {
+            transform: translateY(0);
+        }
+        .result-overlay.success .result-bg {
+            background: linear-gradient(160deg, #1fbf88 0%, #21b987 40%, #149a6c 100%);
+        }
+        .result-overlay.fail .result-bg {
+            background: linear-gradient(160deg, #f06060 0%, #e5484d 40%, #b83036 100%);
+        }
+
+        .result-curve {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140%;
+            height: 120px;
+            background: inherit;
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        }
+
+        .result-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            padding: 30px 24px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.55s;
+        }
+        .result-overlay.show .result-inner {
+            opacity: 1;
+        }
+
+        .result-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transform: scale(0);
+            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08), 0 0 40px rgba(255, 255, 255, 0.2);
+        }
+        .result-overlay.show .result-circle {
+            animation: circlePop 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) 0.7s forwards;
+        }
+        @keyframes circlePop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .result-circle::after {
+            content: "";
+            position: absolute;
+            inset: -14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: transparent;
+            border-right-color: transparent;
+            opacity: 0;
+        }
+        .result-overlay.show .result-circle::after {
+            animation: ringSpin 2s linear infinite, ringFadeIn 0.4s ease 0.8s forwards;
+        }
+        @keyframes ringSpin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes ringFadeIn {
+            to { opacity: 1; }
+        }
+
+        .result-circle svg {
+            width: 56px;
+            height: 56px;
+            stroke: white;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+        .result-circle .tick-path {
+            stroke-dasharray: 60;
+            stroke-dashoffset: 60;
+        }
+        .result-circle .cross-path {
+            stroke-dasharray: 55;
+            stroke-dashoffset: 55;
+        }
+        .result-overlay.show .result-circle .draw {
+            animation: drawPath 0.55s ease-out 1.15s forwards;
+        }
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .result-inner h2 {
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .result-inner p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.7;
+            max-width: 460px;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .result-inner .amount-line {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .result-inner .quote {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+            font-style: italic;
+            max-width: 420px;
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .result-inner .retry-btn {
+            margin-top: 14px;
+            background: white;
+            color: #b83036;
+            border: 0;
+            padding: 13px 30px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .result-inner .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+        }
+
+        .result-overlay.show .result-inner h2 {
+            animation: fadeUp 0.55s ease-out 1.35s forwards;
+        }
+        .result-overlay.show .result-inner .amount-line {
+            animation: fadeUp 0.55s ease-out 1.5s forwards;
+        }
+        .result-overlay.show .result-inner p {
+            animation: fadeUp 0.55s ease-out 1.65s forwards;
+        }
+        .result-overlay.show .result-inner .quote {
+            animation: fadeUp 0.55s ease-out 1.8s forwards;
+        }
+        .result-overlay.show .result-inner .retry-btn {
+            animation: fadeUp 0.55s ease-out 2s forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .confetti-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 14px;
+            opacity: 0;
+            top: -20px;
+        }
+
+        /* ---------- TABLET & DESKTOP (≥ 900px) ---------- */
+        @media (min-width: 900px) {
             body {
-                height: 100%;
-            }
-
-            body {
-                font-family:
-                    Inter,
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Segoe UI",
-                    Roboto,
-                    Arial,
-                    sans-serif;
-                background: #fff;
-                color: var(--text);
-                min-height: 100vh;
-                display: flex;
-                align-items: flex-start;
-                justify-content: center;
-                padding: 0;
-                overflow-x: hidden;
+                align-items: center;
             }
 
             .checkout-window {
-                width: 100%;
-                min-height: 100vh;
-                background: white;
+                max-width: 1400px;
+                margin: 0 auto;
                 border-radius: 0;
-                overflow: visible;
-                box-shadow: none;
-                transition: box-shadow 0.6s ease;
-                position: relative;
-            }
-
-            .checkout-window.processing,
-            .checkout-window.success {
                 box-shadow: none;
             }
 
             .checkout-content {
-                min-height: 100vh;
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                background: #fff;
+                min-height: 100vh;
             }
 
             .checkout-left {
+                order: 0;
                 padding: 48px 56px;
-                display: flex;
-                flex-direction: column;
                 justify-content: center;
                 max-width: 560px;
                 width: 100%;
                 margin-left: auto;
+                margin-right: 0;
             }
 
             .checkout-left h2 {
                 font-size: 22px;
-                margin-bottom: 6px;
-                letter-spacing: -0.3px;
             }
             .checkout-left .sub {
-                color: #777;
                 font-size: 13px;
                 margin-bottom: 22px;
-                line-height: 1.5;
             }
 
             .back-link {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                font-size: 11px;
-                font-weight: 700;
-                color: #888;
-                text-decoration: none;
                 margin-bottom: 20px;
-                letter-spacing: 0.3px;
-                transition: color 0.2s ease;
-            }
-            .back-link:hover {
-                color: #3266c5;
             }
 
             .amount-row {
-                display: grid;
                 grid-template-columns: repeat(4, 1fr);
                 gap: 8px;
-                margin-bottom: 10px;
             }
 
             .amount-btn {
                 height: 42px;
-                border: 1px solid #dcdde3;
-                background: white;
-                color: #333;
-                border-radius: 9px;
                 font-size: 12px;
-                font-weight: 700;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            .amount-btn:hover {
-                border-color: #b8bccb;
-                background: #f7f8fc;
-            }
-            .amount-btn.active {
-                background: #1d4fb4;
-                border-color: #1d4fb4;
-                color: white;
-                box-shadow: 0 4px 12px rgba(29, 79, 180, 0.25);
-            }
-            .checkout-window.mpesa-mode .amount-btn.active {
-                background: var(--mpesa-dark);
-                border-color: var(--mpesa-dark);
-                box-shadow: 0 4px 12px rgba(67, 176, 42, 0.25);
+                border-radius: 9px;
             }
 
             .custom-amount-wrap {
-                position: relative;
                 margin-bottom: 20px;
             }
-            .custom-amount-wrap .currency {
-                position: absolute;
-                left: 14px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 13px;
-                font-weight: 700;
-                color: #666;
-                pointer-events: none;
-            }
             #customAmount {
-                width: 100%;
                 height: 42px;
-                border: 1px solid #dcdde3;
-                border-radius: 9px;
-                padding: 0 12px 0 30px;
                 font-size: 13px;
-                font-weight: 600;
-                color: #222;
-                outline: none;
-                transition:
-                    border 0.25s ease,
-                    box-shadow 0.25s ease;
-                background: white;
+                padding-left: 30px;
             }
-            #customAmount:focus {
-                border-color: #3266c5;
-                box-shadow: 0 0 0 3px rgba(50, 102, 197, 0.08);
+            .custom-amount-wrap .currency {
+                font-size: 13px;
+                left: 14px;
             }
 
             .method-toggle {
-                position: relative;
-                display: flex;
-                background: #eef0f5;
-                border-radius: 12px;
-                padding: 4px;
-                margin-bottom: 22px;
                 height: 46px;
-                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
-            }
-            .method-toggle .slider {
-                position: absolute;
-                top: 4px;
-                left: 4px;
-                width: calc(50% - 4px);
-                height: calc(100% - 8px);
-                background: white;
-                border-radius: 9px;
-                box-shadow:
-                    0 2px 6px rgba(0, 0, 0, 0.12),
-                    0 1px 2px rgba(0, 0, 0, 0.08);
-                transition: transform 0.35s cubic-bezier(0.4, 0.1, 0.2, 1);
-                z-index: 1;
-            }
-            .method-toggle.mpesa .slider {
-                transform: translateX(100%);
+                margin-bottom: 22px;
             }
             .method-toggle button {
-                flex: 1;
-                position: relative;
-                z-index: 2;
-                border: 0;
-                background: transparent;
                 font-size: 12px;
-                font-weight: 700;
-                color: #666;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 7px;
-                border-radius: 9px;
-                transition: color 0.3s ease;
-                letter-spacing: 0.2px;
-            }
-            .method-toggle button.active {
-                color: #111;
             }
             .method-toggle .logo-svg {
                 width: 42px;
                 height: 16px;
-                display: block;
             }
             .method-toggle .logo-svg.mpesa-svg {
                 width: 56px;
@@ -240,825 +1199,99 @@
                 gap: 12px;
             }
 
-            .field {
-                margin-bottom: 16px;
-            }
-            .field label {
-                display: block;
-                font-size: 10px;
-                font-weight: 700;
-                margin-bottom: 6px;
-                color: #454545;
-                letter-spacing: 0.4px;
-            }
-            .field label .req {
-                color: var(--red);
-                margin-left: 2px;
-            }
             .field input {
-                width: 100%;
                 height: 42px;
-                border: 1px solid #dcdde3;
+                font-size: 13px;
                 border-radius: 8px;
                 padding: 0 12px;
-                background: white;
-                color: #222;
-                outline: none;
-                font-size: 13px;
-                transition:
-                    border 0.25s ease,
-                    box-shadow 0.25s ease;
-            }
-            .field input::placeholder {
-                color: #b8bcc7;
-                font-weight: 500;
-            }
-            .field input:focus {
-                border-color: #3266c5;
-                box-shadow: 0 0 0 3px rgba(50, 102, 197, 0.08);
-            }
-
-            .field-group {
-                display: none;
-            }
-            .field-group.active {
-                display: block;
-            }
-            .format-hint {
-                font-size: 10px;
-                color: #888;
-                margin-top: 6px;
-                letter-spacing: 0.2px;
             }
 
             .pay-button {
-                width: 100%;
                 height: 50px;
-                border: 0;
-                border-radius: 9px;
-                background: #1d4fb4;
-                color: white;
                 font-size: 14px;
-                font-weight: 700;
-                cursor: pointer;
-                margin-top: 8px;
-                box-shadow: 0 5px 12px rgba(29, 79, 180, 0.15);
-                transition:
-                    transform 0.2s ease,
-                    box-shadow 0.2s ease,
-                    background 0.3s ease;
-            }
-            .pay-button.mpesa-mode {
-                background: var(--mpesa-dark);
-                box-shadow: 0 5px 12px rgba(67, 176, 42, 0.25);
-            }
-            .pay-button.mpesa-mode:hover {
-                box-shadow: 0 8px 18px rgba(67, 176, 42, 0.35);
-            }
-            .pay-button:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 8px 18px rgba(29, 79, 180, 0.23);
-            }
-            .pay-button:active {
-                transform: scale(0.98);
-            }
-            .pay-button:disabled {
-                cursor: not-allowed;
-                opacity: 0.85;
-            }
-            .pay-button:disabled:hover {
-                transform: none;
+                border-radius: 9px;
             }
 
             .checkout-right {
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                overflow: visible;
-                perspective: 1400px;
+                order: 0;
                 padding: 40px;
-            }
-
-            .card-view {
-                display: flex;
+                min-height: 100vh;
+                perspective: 1400px;
                 align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                gap: 32px;
-                width: 100%;
-                height: 100%;
-                transition:
-                    opacity 0.4s ease,
-                    transform 0.4s ease;
-            }
-            .card-view.hidden {
-                opacity: 0;
-                pointer-events: none;
-                transform: scale(0.95);
-                position: absolute;
-                inset: 0;
             }
 
-            .card-stage {
-                position: relative;
-                width: 300px;
-                height: 188px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.28))
-                    drop-shadow(0 8px 10px rgba(0, 0, 0, 0.18));
-            }
-
-            .neon-ring {
-                position: absolute;
-                inset: -6px;
-                border-radius: 22px;
-                padding: 3px;
-                background: conic-gradient(
-                    from var(--neon-angle, 0deg),
-                    transparent 0deg,
-                    transparent 240deg,
-                    rgba(57, 255, 136, 0.25) 270deg,
-                    var(--neon) 320deg,
-                    #b8ffd6 340deg,
-                    var(--neon) 360deg
-                );
-                opacity: 0;
-                transition: opacity 0.35s ease;
-                pointer-events: none;
-                z-index: 0;
-                -webkit-mask:
-                    linear-gradient(#000 0 0) content-box,
-                    linear-gradient(#000 0 0);
-                -webkit-mask-composite: xor;
-                mask-composite: exclude;
-            }
-            .card-wrapper.processing + .neon-ring {
-                opacity: 1;
-                animation: neonSpin 1.6s linear infinite;
-            }
-
-            @property --neon-angle {
-                syntax: "<angle>";
-                initial-value: 0deg;
-                inherits: false;
-            }
-            @keyframes neonSpin {
-                to {
-                    --neon-angle: 360deg;
-                }
-            }
-
-            .neon-halo {
-                position: absolute;
-                inset: -20px;
-                border-radius: 30px;
-                background: radial-gradient(
-                    ellipse at center,
-                    rgba(57, 255, 136, 0.35) 0%,
-                    transparent 65%
-                );
-                opacity: 0;
-                transition: opacity 0.35s ease;
-                filter: blur(8px);
-                pointer-events: none;
-                z-index: -1;
-            }
-            .card-wrapper.processing + .neon-ring + .neon-halo {
-                opacity: 1;
-                animation: haloPulse 1.6s ease-in-out infinite;
-            }
-            @keyframes haloPulse {
-                0%,
-                100% {
-                    opacity: 0.8;
-                    transform: scale(1);
-                }
-                50% {
-                    opacity: 1;
-                    transform: scale(1.05);
-                }
-            }
-
+            .card-stage,
             .card-wrapper {
-                position: relative;
                 width: 300px;
                 height: 188px;
-                transform-style: preserve-3d;
-                transition: transform 0.9s cubic-bezier(0.4, 0.1, 0.2, 1);
-                z-index: 1;
-            }
-            .card-wrapper.flipped {
-                transform: rotateY(180deg);
             }
 
-            .card-face {
-                position: absolute;
-                inset: 0;
-                border-radius: 16px;
-                overflow: hidden;
-                backface-visibility: hidden;
-                -webkit-backface-visibility: hidden;
-                box-shadow:
-                    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-                    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
-                    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-                    0 1px 0 rgba(0, 0, 0, 0.35);
-            }
-
+            .card-face { border-radius: 16px; }
             .card-front,
             .card-back {
-                position: absolute;
-                inset: 0;
                 padding: 20px;
-                color: white;
                 border-radius: 16px;
-                transition: background 0.55s ease;
-            }
-            .card-front::before,
-            .card-back::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                border-radius: inherit;
-                pointer-events: none;
-                background: repeating-linear-gradient(
-                    115deg,
-                    rgba(255, 255, 255, 0.06) 0px,
-                    rgba(255, 255, 255, 0.06) 1px,
-                    transparent 1px,
-                    transparent 3px
-                );
-                mix-blend-mode: overlay;
-                opacity: 0.55;
-                z-index: 1;
-            }
-            .card-front::after,
-            .card-back::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                border-radius: inherit;
-                pointer-events: none;
-                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
-                background-size: 160px 160px;
-                mix-blend-mode: overlay;
-                opacity: 0.18;
-                z-index: 2;
-            }
-            .face-vignette {
-                position: absolute;
-                inset: 0;
-                border-radius: inherit;
-                pointer-events: none;
-                background:
-                    radial-gradient(
-                        120% 90% at 20% 0%,
-                        rgba(255, 255, 255, 0.14) 0%,
-                        transparent 45%
-                    ),
-                    radial-gradient(
-                        120% 90% at 90% 120%,
-                        rgba(0, 0, 0, 0.35) 0%,
-                        transparent 55%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        rgba(255, 255, 255, 0.06) 0%,
-                        transparent 30%,
-                        rgba(0, 0, 0, 0.12) 100%
-                    );
-                z-index: 3;
-            }
-            .face-streak {
-                position: absolute;
-                top: -60%;
-                left: -30%;
-                width: 60%;
-                height: 220%;
-                pointer-events: none;
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.09) 45%,
-                    rgba(255, 255, 255, 0.18) 50%,
-                    rgba(255, 255, 255, 0.09) 55%,
-                    transparent 100%
-                );
-                transform: rotate(18deg);
-                filter: blur(6px);
-                z-index: 4;
-                opacity: 0.8;
             }
 
-            .card-front {
-                overflow: hidden;
-            }
-
-            .card-top {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: relative;
-                z-index: 5;
+            .card-number {
+                font-size: 17px;
+                letter-spacing: 2.4px;
+                margin-top: 26px;
             }
             .chip {
                 width: 38px;
                 height: 30px;
                 border-radius: 5px;
-                position: relative;
-                background: linear-gradient(
-                    135deg,
-                    #f6e6a4 0%,
-                    #d4b04a 22%,
-                    #f7e79f 48%,
-                    #b88b28 74%,
-                    #e8cf6b 100%
-                );
-                box-shadow:
-                    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-                    0 1px 2px rgba(0, 0, 0, 0.35);
-                overflow: hidden;
             }
-            .chip::before {
-                content: "";
-                position: absolute;
-                inset: 3px;
-                border-radius: 3px;
-                background:
-                    linear-gradient(
-                        90deg,
-                        transparent 0 31%,
-                        rgba(0, 0, 0, 0.45) 31% 33%,
-                        transparent 33% 65%,
-                        rgba(0, 0, 0, 0.45) 65% 67%,
-                        transparent 67% 100%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        transparent 0 46%,
-                        rgba(0, 0, 0, 0.45) 46% 54%,
-                        transparent 54% 100%
-                    );
-                pointer-events: none;
-            }
-            .chip::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(
-                    135deg,
-                    rgba(255, 255, 255, 0.75) 0%,
-                    transparent 35%
-                );
-                opacity: 0.7;
-                pointer-events: none;
-            }
-            .contactless {
-                font-size: 19px;
-                opacity: 0.9;
-                margin-left: 6px;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-            }
-            .platinum {
-                font-size: 10px;
-                letter-spacing: 1.5px;
-                font-weight: 800;
-                opacity: 0.9;
-                text-shadow:
-                    0 1px 0 rgba(255, 255, 255, 0.18),
-                    0 -1px 0 rgba(0, 0, 0, 0.4);
-                font-family: "SF Mono", "Menlo", monospace;
-            }
-            .card-number {
-                margin-top: 26px;
-                font-family: "SF Mono", "Menlo", "Consolas", monospace;
-                font-size: 17px;
-                font-weight: 700;
-                letter-spacing: 2.4px;
-                position: relative;
-                z-index: 5;
-                min-height: 20px;
-                color: rgba(255, 255, 255, 0.55);
-                text-shadow:
-                    0 1px 1px rgba(255, 255, 255, 0.15),
-                    0 -1px 1px rgba(0, 0, 0, 0.55);
-                transition:
-                    color 0.2s ease,
-                    text-shadow 0.2s ease;
-            }
-            .card-number.filled {
-                color: #fff;
-                text-shadow:
-                    0 1px 0 rgba(255, 255, 255, 0.35),
-                    0 -1px 0 rgba(0, 0, 0, 0.55),
-                    0 2px 2px rgba(0, 0, 0, 0.35);
-            }
+            .contactless { font-size: 19px; }
+            .platinum { font-size: 10px; letter-spacing: 1.5px; }
             .card-bottom {
-                display: flex;
-                align-items: flex-end;
-                justify-content: space-between;
-                position: absolute;
                 left: 20px;
                 right: 20px;
                 bottom: 20px;
-                z-index: 5;
             }
-            .card-info small {
-                display: block;
-                font-size: 7px;
-                opacity: 0.7;
-                margin-bottom: 4px;
-                letter-spacing: 1px;
-                font-weight: 700;
-                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-            }
-            .card-info strong {
-                font-size: 10px;
-                letter-spacing: 0.8px;
-                font-weight: 800;
-                color: rgba(255, 255, 255, 0.55);
-                text-shadow:
-                    0 1px 0 rgba(255, 255, 255, 0.2),
-                    0 -1px 0 rgba(0, 0, 0, 0.55);
-                transition: color 0.2s ease;
-            }
-            .card-info strong.filled {
-                color: #fff;
-                text-shadow:
-                    0 1px 0 rgba(255, 255, 255, 0.35),
-                    0 -1px 0 rgba(0, 0, 0, 0.55);
-            }
-            .card-visa-wrap {
-                position: relative;
-                display: inline-flex;
-                align-items: center;
-                padding: 3px 6px;
-                border-radius: 4px;
-                background: linear-gradient(
-                    135deg,
-                    rgba(255, 255, 255, 0.18) 0%,
-                    rgba(200, 230, 255, 0.12) 25%,
-                    rgba(255, 220, 240, 0.14) 50%,
-                    rgba(220, 255, 230, 0.12) 75%,
-                    rgba(255, 240, 200, 0.18) 100%
-                );
-                box-shadow:
-                    inset 0 0 0 1px rgba(255, 255, 255, 0.25),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-                    0 1px 2px rgba(0, 0, 0, 0.35);
-            }
-            .card-visa-wrap::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                border-radius: inherit;
-                background: repeating-linear-gradient(
-                    100deg,
-                    rgba(255, 255, 255, 0.14) 0 3px,
-                    transparent 3px 6px
-                );
-                mix-blend-mode: overlay;
-                opacity: 0.7;
-                pointer-events: none;
-            }
-            .card-visa-logo {
-                height: 20px;
-                width: auto;
-                display: block;
-                opacity: 0.95;
-                position: relative;
-                z-index: 1;
-            }
+            .card-info strong { font-size: 10px; letter-spacing: 0.8px; }
+            .card-info small { font-size: 7px; letter-spacing: 1px; }
+            .card-visa-logo { height: 20px; }
+            .card-visa-wrap { padding: 3px 6px; border-radius: 4px; }
 
-            .card-back {
-                transform: rotateY(180deg);
-                display: flex;
-                flex-direction: column;
-                padding: 20px;
-            }
             .card-back-strip {
                 height: 42px;
-                background: linear-gradient(
-                    180deg,
-                    #000 0%,
-                    #161616 45%,
-                    #0a0a0a 100%
-                );
                 margin: -20px -20px 16px -20px;
-                box-shadow:
-                    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-                    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
-                position: relative;
-                z-index: 5;
-            }
-            .card-back-label {
-                font-size: 8px;
-                letter-spacing: 1px;
-                opacity: 0.75;
-                margin-bottom: 5px;
-                position: relative;
-                z-index: 5;
-                font-weight: 700;
             }
             .card-back-cvv {
-                background: linear-gradient(180deg, #fafafa 0%, #e6e6e6 100%);
-                color: #111;
-                font-family: "SF Mono", "Menlo", monospace;
-                font-weight: 800;
                 font-size: 13px;
                 padding: 7px 14px;
-                border-radius: 4px;
-                text-align: right;
-                letter-spacing: 3px;
                 min-height: 26px;
-                box-shadow:
-                    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-                    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
-                    0 1px 2px rgba(0, 0, 0, 0.35);
-                position: relative;
-                z-index: 5;
             }
-            .card-back-note {
-                margin-top: auto;
-                font-size: 8px;
-                opacity: 0.6;
-                line-height: 1.5;
-                position: relative;
-                z-index: 5;
-                letter-spacing: 0.3px;
-            }
+            .card-back-label { font-size: 8px; }
+            .card-back-note { font-size: 8px; }
 
-            .processing-badge {
-                position: absolute;
-                inset: 0;
-                background: rgba(4, 20, 10, 0.6);
-                backdrop-filter: blur(3px);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-end;
-                padding-bottom: 24px;
-                gap: 8px;
-                z-index: 20;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.3s ease;
-                border-radius: 16px;
+            .card-stage {
+                filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.28)) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.18));
             }
-            .card-wrapper.processing .processing-badge {
-                opacity: 1;
-            }
-
-            .badge-spinner {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                border: 3px solid rgba(57, 255, 136, 0.2);
-                border-top-color: var(--neon);
-                border-right-color: var(--neon);
-                animation: badgeSpin 0.9s linear infinite;
-                box-shadow: 0 0 20px rgba(57, 255, 136, 0.7);
-            }
-            @keyframes badgeSpin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .badge-text {
-                font-size: 11px;
-                font-weight: 800;
-                letter-spacing: 2.5px;
-                color: var(--neon);
-                text-shadow:
-                    0 0 12px rgba(57, 255, 136, 0.85),
-                    0 0 24px rgba(57, 255, 136, 0.45);
-                animation: badgePulse 1.3s ease-in-out infinite;
-            }
-            @keyframes badgePulse {
-                0%,
-                100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.55;
-                }
-            }
-
-            .badge-sub {
-                font-size: 8px;
-                color: rgba(255, 255, 255, 0.75);
-                letter-spacing: 1.2px;
-                font-weight: 600;
-                text-transform: uppercase;
-            }
+            .neon-ring { border-radius: 22px; }
+            .processing-badge { border-radius: 16px; padding-bottom: 24px; }
+            .badge-spinner { width: 36px; height: 36px; }
+            .badge-text { font-size: 11px; letter-spacing: 2.5px; }
+            .badge-sub { font-size: 8px; }
 
             .mpesa-view {
                 position: absolute;
                 inset: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
                 padding: 40px 30px;
-                opacity: 0;
-                pointer-events: none;
-                transform: scale(0.95);
-                transition:
-                    opacity 0.4s ease,
-                    transform 0.4s ease;
             }
-            .mpesa-view.show {
-                opacity: 1;
-                pointer-events: auto;
-                transform: scale(1);
-            }
-
             .mpesa-panel {
-                background: #f4f9f1;
-                border: 1px solid #e2efe0;
-                border-radius: 16px;
                 padding: 34px 30px 30px;
-                width: 100%;
                 max-width: 340px;
-                text-align: center;
-                box-shadow: 0 8px 24px rgba(67, 176, 42, 0.08);
             }
-            .mpesa-panel-logo {
-                height: 36px;
-                width: auto;
-                display: block;
-                margin: 0 auto 20px;
-            }
-
-            .mpesa-panel .instr {
-                font-size: 13px;
-                font-weight: 600;
-                color: #333;
-                line-height: 1.5;
-                margin-bottom: 22px;
-                text-align: left;
-            }
-            .mpesa-preview {
-                background: white;
-                border: 1px solid #e2efe0;
-                border-radius: 12px;
-                padding: 16px 18px;
-                text-align: left;
-                margin-bottom: 6px;
-                box-shadow: inset 0 1px 3px rgba(67, 176, 42, 0.05);
-            }
-            .mpesa-preview-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 7px 0;
-            }
-            .mpesa-preview-row + .mpesa-preview-row {
-                border-top: 1px dashed #d7e7d2;
-            }
-            .mpesa-preview-row .label {
-                font-size: 10px;
-                font-weight: 700;
-                color: #6a8a64;
-                letter-spacing: 0.5px;
-            }
-            .mpesa-preview-row .value {
-                font-size: 13px;
-                font-weight: 700;
-                color: #1f4a1a;
-                font-family: monospace;
-                letter-spacing: 0.5px;
-                max-width: 60%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .mpesa-preview-row .value.empty {
-                color: #b8c7b4;
-                font-weight: 500;
-                font-style: italic;
-                font-family: inherit;
-            }
-
-            .stk-push {
-                position: absolute;
-                inset: 0;
-                background: rgba(244, 249, 241, 0.97);
-                backdrop-filter: blur(4px);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 14px;
-                color: #1f4a1a;
-                padding: 30px;
-                text-align: center;
-                z-index: 50;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.4s ease;
-            }
-            .stk-push.show {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .stk-phone {
-                width: 60px;
-                height: 100px;
-                border: 3px solid var(--mpesa);
-                border-radius: 12px;
-                position: relative;
-                margin-bottom: 6px;
-                animation: phoneBuzz 1.2s ease-in-out infinite;
-            }
-            .stk-phone::before {
-                content: "";
-                position: absolute;
-                top: 6px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 18px;
-                height: 3px;
-                background: var(--mpesa);
-                border-radius: 2px;
-                opacity: 0.6;
-            }
-            .stk-phone::after {
-                content: "";
-                position: absolute;
-                bottom: 8px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 8px;
-                height: 8px;
-                border: 2px solid var(--mpesa);
-                border-radius: 50%;
-                opacity: 0.6;
-            }
-            @keyframes phoneBuzz {
-                0%,
-                100% {
-                    transform: translateY(0) rotate(0);
-                }
-                25% {
-                    transform: translateY(-3px) rotate(-2deg);
-                }
-                50% {
-                    transform: translateY(0) rotate(0);
-                }
-                75% {
-                    transform: translateY(-3px) rotate(2deg);
-                }
-            }
-            .stk-push h3 {
-                font-size: 15px;
-                font-weight: 700;
-                color: #1f4a1a;
-            }
-            .stk-push p {
-                font-size: 11px;
-                color: #4a6b46;
-                line-height: 1.6;
-                max-width: 240px;
-            }
-            .stk-dots {
-                display: flex;
-                gap: 6px;
-                margin-top: 6px;
-            }
-            .stk-dots span {
-                width: 7px;
-                height: 7px;
-                background: var(--mpesa);
-                border-radius: 50%;
-                animation: dotPulse 1.2s ease-in-out infinite;
-            }
-            .stk-dots span:nth-child(2) {
-                animation-delay: 0.2s;
-            }
-            .stk-dots span:nth-child(3) {
-                animation-delay: 0.4s;
-            }
-            @keyframes dotPulse {
-                0%,
-                100% {
-                    opacity: 0.25;
-                    transform: scale(0.7);
-                }
-                50% {
-                    opacity: 1;
-                    transform: scale(1.2);
-                }
-            }
+            .mpesa-panel-logo { height: 36px; margin-bottom: 20px; }
+            .mpesa-panel .instr { font-size: 13px; }
+            .mpesa-preview-row .label { font-size: 10px; }
+            .mpesa-preview-row .value { font-size: 13px; }
 
             .status {
+                display: flex !important;
                 position: absolute;
                 bottom: 32px;
                 left: 0;
@@ -1066,7 +1299,6 @@
                 text-align: center;
                 font-size: 12px;
                 font-weight: 700;
-                display: flex;
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
@@ -1074,946 +1306,829 @@
                 pointer-events: none;
             }
             .status.hidden {
-                display: none;
-            }
-            .status-text {
-                transition: color 0.3s ease;
-            }
-            .spinner {
-                width: 18px;
-                height: 18px;
-                border: 2px solid #ddd;
-                border-top-color: #2d4e98;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-                display: none;
-            }
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
+                display: none !important;
             }
 
-            .result-overlay {
-                position: fixed;
-                inset: 0;
-                z-index: 9999;
-                pointer-events: none;
-                overflow: hidden;
-            }
-            .result-overlay.show {
-                pointer-events: auto;
-            }
+            .result-inner h2 { font-size: clamp(26px, 4.5vw, 40px); }
+            .result-inner p { font-size: 14px; }
+            .result-circle { width: 130px; height: 130px; }
+            .result-circle svg { width: 66px; height: 66px; }
+        }
 
-            .result-bg {
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                height: 130%;
-                transform: translateY(100%);
-                transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
-                will-change: transform;
+        /* Larger desktop */
+        @media (min-width: 1400px) {
+            .checkout-left {
+                max-width: 620px;
+                padding: 56px 72px;
             }
-            .result-overlay.show .result-bg {
-                transform: translateY(0);
+            .card-stage,
+            .card-wrapper {
+                width: 340px;
+                height: 213px;
             }
-            .result-overlay.success .result-bg {
-                background: linear-gradient(
-                    160deg,
-                    #1fbf88 0%,
-                    #21b987 40%,
-                    #149a6c 100%
-                );
+            .card-number {
+                font-size: 19px;
+                letter-spacing: 2.8px;
             }
-            .result-overlay.fail .result-bg {
-                background: linear-gradient(
-                    160deg,
-                    #f06060 0%,
-                    #e5484d 40%,
-                    #b83036 100%
-                );
+            .card-front,
+            .card-back { padding: 24px; }
+            .card-bottom {
+                left: 24px;
+                right: 24px;
+                bottom: 24px;
             }
+            .card-visa-logo { height: 24px; }
+            .card-back-strip {
+                height: 48px;
+                margin: -24px -24px 20px -24px;
+            }
+        }
 
-            .result-curve {
-                position: absolute;
-                top: -60px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 140%;
-                height: 120px;
-                background: inherit;
-                border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        /* Very small screens */
+        @media (max-width: 380px) {
+            .card-stage,
+            .card-wrapper {
+                width: 250px;
+                height: 157px;
             }
-
-            .result-inner {
-                position: absolute;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                gap: 18px;
-                padding: 30px;
-                text-align: center;
-                opacity: 0;
-                transition: opacity 0.5s ease 0.55s;
-            }
-            .result-overlay.show .result-inner {
-                opacity: 1;
-            }
-
-            .result-circle {
-                width: 130px;
-                height: 130px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.15);
-                border: 4px solid white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                transform: scale(0);
-                box-shadow:
-                    0 0 0 8px rgba(255, 255, 255, 0.08),
-                    0 0 40px rgba(255, 255, 255, 0.2);
-            }
-            .result-overlay.show .result-circle {
-                animation: circlePop 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) 0.7s
-                    forwards;
-            }
-            @keyframes circlePop {
-                0% {
-                    transform: scale(0);
-                }
-                70% {
-                    transform: scale(1.1);
-                }
-                100% {
-                    transform: scale(1);
-                }
-            }
-            .result-circle::after {
-                content: "";
-                position: absolute;
-                inset: -14px;
-                border-radius: 50%;
-                border: 2px solid rgba(255, 255, 255, 0.4);
-                border-top-color: transparent;
-                border-right-color: transparent;
-                opacity: 0;
-            }
-            .result-overlay.show .result-circle::after {
-                animation:
-                    ringSpin 2s linear infinite,
-                    ringFadeIn 0.4s ease 0.8s forwards;
-            }
-            @keyframes ringSpin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            @keyframes ringFadeIn {
-                to {
-                    opacity: 1;
-                }
-            }
-
-            .result-circle svg {
-                width: 66px;
-                height: 66px;
-                stroke: white;
-                stroke-width: 6;
-                stroke-linecap: round;
-                stroke-linejoin: round;
-                fill: none;
-            }
-            .result-circle .tick-path {
-                stroke-dasharray: 60;
-                stroke-dashoffset: 60;
-            }
-            .result-circle .cross-path {
-                stroke-dasharray: 55;
-                stroke-dashoffset: 55;
-            }
-            .result-overlay.show .result-circle .draw {
-                animation: drawPath 0.55s ease-out 1.15s forwards;
-            }
-            @keyframes drawPath {
-                to {
-                    stroke-dashoffset: 0;
-                }
-            }
-
-            .result-inner h2 {
-                color: white;
-                font-size: clamp(26px, 4.5vw, 40px);
-                font-weight: 800;
-                letter-spacing: -0.6px;
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            .result-inner p {
-                color: rgba(255, 255, 255, 0.9);
-                font-size: 14px;
-                line-height: 1.7;
-                max-width: 460px;
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            .result-inner .amount-line {
-                color: white;
-                font-size: 16px;
-                font-weight: 700;
-                letter-spacing: 0.2px;
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            .result-inner .quote {
-                color: rgba(255, 255, 255, 0.85);
+            .card-number {
                 font-size: 13px;
-                font-style: italic;
-                max-width: 420px;
-                margin-top: 6px;
-                opacity: 0;
-                transform: translateY(16px);
+                letter-spacing: 1.6px;
+                margin-top: 18px;
             }
-            .result-inner .retry-btn {
-                margin-top: 14px;
-                background: white;
-                color: #b83036;
-                border: 0;
-                padding: 13px 30px;
-                border-radius: 10px;
-                font-weight: 800;
-                font-size: 13px;
-                cursor: pointer;
-                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-                opacity: 0;
-                transform: translateY(16px);
-                transition:
-                    transform 0.2s ease,
-                    box-shadow 0.2s ease;
+            .chip { width: 28px; height: 22px; }
+            .contactless { font-size: 14px; }
+            .platinum { font-size: 8px; letter-spacing: 1px; }
+            .card-info strong { font-size: 8px; }
+            .card-info small { font-size: 5px; }
+            .card-visa-logo { height: 15px; }
+            .card-back-strip {
+                height: 32px;
+                margin: -16px -16px 12px -16px;
             }
-            .result-inner .retry-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+            .card-back-cvv {
+                font-size: 10px;
+                padding: 5px 10px;
+                min-height: 20px;
             }
+            .amount-btn {
+                height: 42px;
+                font-size: 12px;
+            }
+            .field input { height: 42px; font-size: 13px; }
+            .pay-button { height: 46px; font-size: 13px; }
+            .method-toggle { height: 42px; }
+            .method-toggle button { font-size: 11px; }
+            .method-toggle .logo-svg { width: 30px; height: 12px; }
+            .method-toggle .logo-svg.mpesa-svg { width: 42px; height: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-window" id="checkoutWindow">
+        <div class="checkout-content">
+            <!-- RIGHT: CARD VISUAL + MPESA VISUAL (top on mobile) -->
+            <div class="checkout-right">
+                <div class="card-view" id="cardView">
+                    <div class="card-stage">
+                        <div class="card-wrapper" id="cardWrapper">
+                            <div class="card-face card-front" id="cardFront">
+                                <div class="face-vignette"></div>
+                                <div class="face-streak"></div>
+                                <div class="card-top">
+                                    <div style="display:flex;align-items:center;gap:6px;">
+                                        <div class="chip"></div>
+                                        <div class="contactless">))</div>
+                                    </div>
+                                    <div class="platinum" id="tierLabel">PLATINUM</div>
+                                </div>
+                                <div class="card-number" id="cardNumber">•••• •••• •••• ••••</div>
+                                <div class="card-bottom">
+                                    <div class="card-info">
+                                        <small>CARDHOLDER NAME</small>
+                                        <strong id="cardHolder">YOUR NAME</strong>
+                                    </div>
+                                    <div class="card-info">
+                                        <small>EXPIRES</small>
+                                        <strong id="cardExpiry">••/••</strong>
+                                    </div>
+                                    <div class="card-visa-wrap">
+                                        <svg class="card-visa-logo" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path fill="#ffffff" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="processing-badge">
+                                    <div class="badge-spinner"></div>
+                                    <div class="badge-text">PROCESSING</div>
+                                    <div class="badge-sub">Securing payment</div>
+                                </div>
+                            </div>
 
-            .result-overlay.show .result-inner h2 {
-                animation: fadeUp 0.55s ease-out 1.35s forwards;
-            }
-            .result-overlay.show .result-inner .amount-line {
-                animation: fadeUp 0.55s ease-out 1.5s forwards;
-            }
-            .result-overlay.show .result-inner p {
-                animation: fadeUp 0.55s ease-out 1.65s forwards;
-            }
-            .result-overlay.show .result-inner .quote {
-                animation: fadeUp 0.55s ease-out 1.8s forwards;
-            }
-            .result-overlay.show .result-inner .retry-btn {
-                animation: fadeUp 0.55s ease-out 2s forwards;
-            }
-            @keyframes fadeUp {
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+                            <div class="card-face card-back" id="cardBack">
+                                <div class="face-vignette"></div>
+                                <div class="face-streak"></div>
+                                <div class="card-back-strip"></div>
+                                <div class="card-back-label">CVV</div>
+                                <div class="card-back-cvv" id="cardCvv">•••</div>
+                                <div class="card-back-note">
+                                    This card is property of Dalla Community Hub.<br />
+                                    Donations are processed securely by Paystack.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="neon-ring"></div>
+                        <div class="neon-halo"></div>
+                    </div>
+                </div>
 
-            .confetti-container {
-                position: absolute;
-                inset: 0;
-                overflow: hidden;
-                pointer-events: none;
-            }
-            .confetti {
-                position: absolute;
-                width: 10px;
-                height: 14px;
-                opacity: 0;
-                top: -20px;
-            }
-
-            @media (max-width: 1024px) {
-                .checkout-left {
-                    padding: 40px 36px;
-                }
-                .checkout-right {
-                    padding: 30px;
-                }
-                .card-stage,
-                .card-wrapper {
-                    width: 280px;
-                    height: 176px;
-                }
-            }
-
-            @media (max-width: 900px) {
-                .checkout-content {
-                    grid-template-columns: 1fr;
-                    min-height: auto;
-                }
-                .checkout-left {
-                    max-width: 100%;
-                    padding: 32px 24px 40px;
-                    margin-left: 0;
-                    order: 2;
-                }
-                .checkout-right {
-                    min-height: auto;
-                    padding: 40px 24px 20px;
-                    order: 1;
-                }
-                .card-stage,
-                .card-wrapper {
-                    width: 280px;
-                    height: 176px;
-                }
-                .status {
-                    position: static;
-                    padding: 16px 0 0;
-                    bottom: auto;
-                }
-                .mpesa-view {
-                    position: static;
-                    padding: 0;
-                    transform: none;
-                    transition: none;
-                }
-                .mpesa-view.show {
-                    transform: none;
-                }
-                .checkout-window,
-                .checkout-content {
-                    min-height: auto;
-                }
-            }
-
-            @media (max-width: 600px) {
-                .checkout-left {
-                    padding: 24px 18px 36px;
-                }
-                .checkout-left h2 {
-                    font-size: 19px;
-                }
-                .checkout-right {
-                    padding: 32px 18px 16px;
-                    min-height: auto;
-                }
-                .card-stage,
-                .card-wrapper {
-                    width: 250px;
-                    height: 157px;
-                }
-                .card-face {
-                    border-radius: 14px;
-                }
-                .card-front,
-                .card-back {
-                    padding: 16px;
-                    border-radius: 14px;
-                }
-                .card-number {
-                    font-size: 14px;
-                    letter-spacing: 1.8px;
-                    margin-top: 18px;
-                }
-                .chip {
-                    width: 30px;
-                    height: 24px;
-                }
-                .contactless {
-                    font-size: 15px;
-                }
-                .platinum {
-                    font-size: 8px;
-                }
-                .card-bottom {
-                    left: 16px;
-                    right: 16px;
-                    bottom: 16px;
-                }
-                .card-info strong {
-                    font-size: 8px;
-                }
-                .card-info small {
-                    font-size: 6px;
-                }
-                .card-visa-logo {
-                    height: 16px;
-                }
-                .card-back-strip {
-                    height: 34px;
-                    margin: -16px -16px 14px -16px;
-                }
-                .card-back-cvv {
-                    font-size: 11px;
-                    padding: 6px 10px;
-                    min-height: 22px;
-                }
-                .amount-row {
-                    gap: 6px;
-                }
-                .amount-btn {
-                    height: 38px;
-                    font-size: 11px;
-                }
-                .form-row {
-                    grid-template-columns: 1fr;
-                    gap: 0;
-                }
-                .method-toggle {
-                    height: 42px;
-                }
-                .method-toggle button {
-                    font-size: 11px;
-                }
-                .method-toggle .logo-svg {
-                    width: 34px;
-                    height: 13px;
-                }
-                .method-toggle .logo-svg.mpesa-svg {
-                    width: 46px;
-                    height: 15px;
-                }
-                .pay-button {
-                    height: 46px;
-                    font-size: 13px;
-                }
-                .mpesa-panel {
-                    padding: 26px 20px 22px;
-                    max-width: 100%;
-                }
-                .mpesa-panel-logo {
-                    height: 30px;
-                    margin-bottom: 14px;
-                }
-                .result-circle {
-                    width: 110px;
-                    height: 110px;
-                }
-                .result-circle svg {
-                    width: 56px;
-                    height: 56px;
-                }
-                .result-inner h2 {
-                    font-size: 22px;
-                }
-                .result-inner p {
-                    font-size: 13px;
-                }
-                .processing-badge {
-                    padding-bottom: 18px;
-                }
-                .badge-spinner {
-                    width: 30px;
-                    height: 30px;
-                }
-                .badge-text {
-                    font-size: 10px;
-                    letter-spacing: 2px;
-                }
-                .badge-sub {
-                    font-size: 7px;
-                }
-            }
-
-            @media (max-width: 380px) {
-                .card-stage,
-                .card-wrapper {
-                    width: 220px;
-                    height: 138px;
-                }
-                .card-number {
-                    font-size: 12px;
-                    letter-spacing: 1.4px;
-                    margin-top: 14px;
-                }
-                .chip {
-                    width: 26px;
-                    height: 20px;
-                }
-                .contactless {
-                    font-size: 13px;
-                }
-                .platinum {
-                    font-size: 7px;
-                    letter-spacing: 1px;
-                }
-                .card-info strong {
-                    font-size: 7px;
-                }
-                .card-info small {
-                    font-size: 5px;
-                }
-                .card-visa-logo {
-                    height: 14px;
-                }
-                .card-back-strip {
-                    height: 28px;
-                    margin: -14px -14px 12px -14px;
-                }
-                .card-back-cvv {
-                    font-size: 10px;
-                    padding: 5px 8px;
-                    min-height: 20px;
-                }
-                .checkout-left {
-                    padding: 20px 14px 30px;
-                }
-                .amount-btn {
-                    height: 34px;
-                    font-size: 10px;
-                }
-            }
-
-            @media (min-width: 1400px) {
-                .checkout-left {
-                    max-width: 620px;
-                    padding: 56px 72px;
-                }
-                .card-stage,
-                .card-wrapper {
-                    width: 340px;
-                    height: 213px;
-                }
-                .card-number {
-                    font-size: 19px;
-                    letter-spacing: 2.8px;
-                }
-                .card-front,
-                .card-back {
-                    padding: 24px;
-                }
-                .card-bottom {
-                    left: 24px;
-                    right: 24px;
-                    bottom: 24px;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="checkout-window" id="checkoutWindow">
-            <div class="checkout-content">
-                <!-- LEFT: FORM -->
-                <div class="checkout-left">
-                    <a href="/" class="back-link">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="15 18 9 12 15 6" />
+                <div class="mpesa-view" id="mpesaView">
+                    <div class="mpesa-panel">
+                        <svg class="mpesa-panel-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
                         </svg>
-                        BACK TO DALLA HUB
-                    </a>
-
-                    <h2 id="formTitle">Make a donation</h2>
-                    <p class="sub" id="formSub">Every shilling helps save a life. Thank you 💚</p>
-
-                    <div class="amount-row" id="amountRow">
-                        <button class="amount-btn" data-amount="500" type="button">$5</button>
-                        <button class="amount-btn" data-amount="1000" type="button">$10</button>
-                        <button class="amount-btn active" data-amount="2500" type="button">$25</button>
-                        <button class="amount-btn" data-amount="5000" type="button">$50</button>
-                    </div>
-
-                    <div class="custom-amount-wrap">
-                        <span class="currency">$</span>
-                        <input type="number" id="customAmount" placeholder="Or enter a custom amount" min="1" step="1" />
-                    </div>
-
-                    <div class="method-toggle" id="methodToggle">
-                        <div class="slider"></div>
-                        <button class="active" data-method="card" type="button" aria-label="Card">
-                            <svg class="logo-svg" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path fill="#1A1F71" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
-                                <path fill="#F7B600" d="M117.2 153H32.4l-.6 3.8c66.1 16 109.9 54.7 128.3 101.1L142.4 166c-2.7-10.8-10.8-12.8-25.2-13z"/>
-                            </svg>
-                        </button>
-                        <button data-method="mpesa" type="button" aria-label="M-Pesa">
-                            <svg class="logo-svg mpesa-svg" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- CARD FIELDS -->
-                    <div class="field-group active" id="cardFields">
-                        <div class="field">
-                            <label>CARDHOLDER NAME</label>
-                            <input type="text" id="inputName" placeholder="Your name" maxlength="24" autocomplete="off" />
-                        </div>
-                        <div class="field">
-                            <label>CARD NUMBER</label>
-                            <input type="text" id="inputNumber" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" autocomplete="off" />
-                        </div>
-                        <div class="form-row">
-                            <div class="field">
-                                <label>EXPIRY DATE</label>
-                                <input type="text" id="inputExpiry" placeholder="MM / YY" maxlength="7" inputmode="numeric" autocomplete="off" />
+                        <div class="instr">Enter the phone number that will receive the M-PESA STK Push to complete payment.</div>
+                        <div class="mpesa-preview">
+                            <div class="mpesa-preview-row">
+                                <span class="label">PHONE</span>
+                                <span class="value empty" id="previewPhone">Not provided</span>
                             </div>
-                            <div class="field">
-                                <label>CVV</label>
-                                <input type="password" id="inputCvv" placeholder="123" maxlength="4" inputmode="numeric" autocomplete="off" />
+                            <div class="mpesa-preview-row">
+                                <span class="label">NAME</span>
+                                <span class="value empty" id="previewName">Not provided</span>
                             </div>
                         </div>
-                        <div class="field">
-                            <label>EMAIL <span class="req">*</span></label>
-                            <input type="email" id="inputEmail" placeholder="you@example.com" autocomplete="email" />
-                            <div class="format-hint">Receipt will be sent to this email.</div>
-                        </div>
                     </div>
-
-                    <!-- MPESA FIELDS -->
-                    <div class="field-group" id="mpesaFields">
-                        <div class="field">
-                            <label>M-PESA PHONE NUMBER <span class="req">*</span></label>
-                            <input type="tel" id="inputPhone" placeholder="07XXXXXXXX" maxlength="10" inputmode="numeric" autocomplete="off" />
-                            <div class="format-hint">Format: 07XXXXXXXX</div>
-                        </div>
-                        <div class="field">
-                            <label>FULL NAME <span class="req">*</span></label>
-                            <input type="text" id="inputMpesaName" placeholder="Your full name" maxlength="24" autocomplete="off" />
-                        </div>
-                        <div class="field">
-                            <label>EMAIL <span class="req">*</span></label>
-                            <input type="email" id="inputMpesaEmail" placeholder="you@example.com" autocomplete="email" />
-                            <div class="format-hint">Receipt will be sent to this email.</div>
-                        </div>
+                    <div class="stk-push" id="stkPush">
+                        <div class="stk-phone"></div>
+                        <h3>STK Push Sent</h3>
+                        <p>Check your phone and enter your M-Pesa PIN to authorize the donation.</p>
+                        <div class="stk-dots"><span></span><span></span><span></span></div>
                     </div>
-
-                    <button class="pay-button" id="payButton" type="button">Donate $25.00</button>
                 </div>
 
-                <!-- RIGHT: CARD VISUAL + MPESA VISUAL -->
-                <div class="checkout-right">
-                    <div class="card-view" id="cardView">
-                        <div class="card-stage">
-                            <div class="card-wrapper" id="cardWrapper">
-                                <div class="card-face card-front" id="cardFront">
-                                    <div class="face-vignette"></div>
-                                    <div class="face-streak"></div>
-                                    <div class="card-top">
-                                        <div style="display:flex;align-items:center;gap:6px;">
-                                            <div class="chip"></div>
-                                            <div class="contactless">))</div>
-                                        </div>
-                                        <div class="platinum" id="tierLabel">PLATINUM</div>
-                                    </div>
-                                    <div class="card-number" id="cardNumber">•••• •••• •••• ••••</div>
-                                    <div class="card-bottom">
-                                        <div class="card-info">
-                                            <small>CARDHOLDER NAME</small>
-                                            <strong id="cardHolder">YOUR NAME</strong>
-                                        </div>
-                                        <div class="card-info">
-                                            <small>EXPIRES</small>
-                                            <strong id="cardExpiry">••/••</strong>
-                                        </div>
-                                        <div class="card-visa-wrap">
-                                            <svg class="card-visa-logo" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path fill="#ffffff" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="processing-badge">
-                                        <div class="badge-spinner"></div>
-                                        <div class="badge-text">PROCESSING</div>
-                                        <div class="badge-sub">Securing payment</div>
-                                    </div>
-                                </div>
-
-                                <div class="card-face card-back" id="cardBack">
-                                    <div class="face-vignette"></div>
-                                    <div class="face-streak"></div>
-                                    <div class="card-back-strip"></div>
-                                    <div class="card-back-label">CVV</div>
-                                    <div class="card-back-cvv" id="cardCvv">•••</div>
-                                    <div class="card-back-note">
-                                        This card is property of Dalla Community Hub.<br />
-                                        Donations are processed securely by Paystack.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="neon-ring"></div>
-                            <div class="neon-halo"></div>
-                        </div>
-                    </div>
-
-                    <div class="mpesa-view" id="mpesaView">
-                        <div class="mpesa-panel">
-                            <svg class="mpesa-panel-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
-                            </svg>
-                            <div class="instr">Enter the phone number that will receive the M-PESA STK Push to complete payment.</div>
-                            <div class="mpesa-preview">
-                                <div class="mpesa-preview-row">
-                                    <span class="label">PHONE</span>
-                                    <span class="value empty" id="previewPhone">Not provided</span>
-                                </div>
-                                <div class="mpesa-preview-row">
-                                    <span class="label">NAME</span>
-                                    <span class="value empty" id="previewName">Not provided</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stk-push" id="stkPush">
-                            <div class="stk-phone"></div>
-                            <h3>STK Push Sent</h3>
-                            <p>Check your phone and enter your M-Pesa PIN to authorize the donation.</p>
-                            <div class="stk-dots"><span></span><span></span><span></span></div>
-                        </div>
-                    </div>
-
-                    <div class="status" id="statusBox">
-                        <div class="spinner" id="spinner"></div>
-                        <div class="status-text" id="statusText">Ready to donate</div>
-                    </div>
+                <div class="status" id="statusBox">
+                    <div class="spinner" id="spinner"></div>
+                    <div class="status-text" id="statusText">Ready to donate</div>
                 </div>
             </div>
-        </div>
 
-        <!-- RESULT OVERLAY -->
-        <div class="result-overlay" id="resultOverlay">
-            <div class="result-bg"><div class="result-curve"></div></div>
-            <div class="result-inner">
-                <div class="result-circle">
-                    <svg id="resultSvg" viewBox="0 0 50 50">
-                        <polyline class="tick-path draw" points="12,26 22,36 38,16" />
+            <!-- LEFT: FORM (bottom on mobile) -->
+            <div class="checkout-left">
+                <a href="/" class="back-link">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6" />
                     </svg>
+                    BACK TO DALLA HUB
+                </a>
+
+                <h2 id="formTitle">Make a donation</h2>
+                <p class="sub" id="formSub">Every shilling helps save a life. Thank you 💚</p>
+
+                <div class="amount-row" id="amountRow">
+                    <button class="amount-btn" data-amount="1000" type="button">$10</button>
+                    <button class="amount-btn active" data-amount="5000" type="button">$50</button>
+                    <button class="amount-btn" data-amount="10000" type="button">$100</button>
                 </div>
-                <h2 id="resultTitle">Thank you!</h2>
-                <div class="amount-line" id="resultAmount">$25.00 donated</div>
-                <p id="resultMsg">Your donation has been received.</p>
-                <div class="quote" id="resultQuote"></div>
-                <button class="retry-btn" id="retryBtn" style="display:none;" type="button">Try again</button>
+
+                <div class="custom-amount-wrap">
+                    <span class="currency">$</span>
+                    <input type="number" id="customAmount" placeholder="Or enter a custom amount" min="1" step="1" />
+                </div>
+
+                <div class="method-toggle" id="methodToggle">
+                    <div class="slider"></div>
+                    <button class="active" data-method="card" type="button" aria-label="Card">
+                        <svg class="logo-svg" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path fill="#1A1F71" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
+                            <path fill="#F7B600" d="M117.2 153H32.4l-.6 3.8c66.1 16 109.9 54.7 128.3 101.1L142.4 166c-2.7-10.8-10.8-12.8-25.2-13z"/>
+                        </svg>
+                    </button>
+                    <button data-method="mpesa" type="button" aria-label="M-Pesa">
+                        <svg class="logo-svg mpesa-svg" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- CARD FIELDS -->
+                <div class="field-group active" id="cardFields">
+                    <div class="field">
+                        <label>CARDHOLDER NAME</label>
+                        <input type="text" id="inputName" placeholder="Your name" maxlength="24" autocomplete="off" />
+                    </div>
+                    <div class="field">
+                        <label>CARD NUMBER</label>
+                        <input type="text" id="inputNumber" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" autocomplete="off" />
+                    </div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label>EXPIRY DATE</label>
+                            <input type="text" id="inputExpiry" placeholder="MM / YY" maxlength="7" inputmode="numeric" autocomplete="off" />
+                        </div>
+                        <div class="field">
+                            <label>CVV</label>
+                            <input type="password" id="inputCvv" placeholder="123" maxlength="4" inputmode="numeric" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>EMAIL <span class="req">*</span></label>
+                        <input type="email" id="inputEmail" placeholder="you@example.com" autocomplete="email" />
+                        <div class="format-hint">Receipt will be sent to this email.</div>
+                    </div>
+                </div>
+
+                <!-- MPESA FIELDS -->
+                <div class="field-group" id="mpesaFields">
+                    <div class="field">
+                        <label>M-PESA PHONE NUMBER <span class="req">*</span></label>
+                        <input type="tel" id="inputPhone" placeholder="07XXXXXXXX" maxlength="10" inputmode="numeric" autocomplete="off" />
+                        <div class="format-hint">Format: 07XXXXXXXX</div>
+                    </div>
+                    <div class="field">
+                        <label>FULL NAME <span class="req">*</span></label>
+                        <input type="text" id="inputMpesaName" placeholder="Your full name" maxlength="24" autocomplete="off" />
+                    </div>
+                    <div class="field">
+                        <label>EMAIL <span class="req">*</span></label>
+                        <input type="email" id="inputMpesaEmail" placeholder="you@example.com" autocomplete="email" />
+                        <div class="format-hint">Receipt will be sent to this email.</div>
+                    </div>
+                </div>
+
+                <button class="pay-button" id="payButton" type="button">Donate $50.00</button>
             </div>
-            <div class="confetti-container" id="confettiContainer"></div>
         </div>
+    </div>
 
-        <script>
-            // ---------- Elements ----------
-            const checkoutWindow = document.getElementById("checkoutWindow");
-            const cardWrapper = document.getElementById("cardWrapper");
-            const cardFront = document.getElementById("cardFront");
-            const cardBack = document.getElementById("cardBack");
-            const cardView = document.getElementById("cardView");
-            const mpesaView = document.getElementById("mpesaView");
-            const spinner = document.getElementById("spinner");
-            const statusBox = document.getElementById("statusBox");
-            const statusText = document.getElementById("statusText");
-            const payButton = document.getElementById("payButton");
-            const stkPush = document.getElementById("stkPush");
-            const tierLabel = document.getElementById("tierLabel");
+    <!-- RESULT OVERLAY -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-bg"><div class="result-curve"></div></div>
+        <div class="result-inner">
+            <div class="result-circle">
+                <svg id="resultSvg" viewBox="0 0 50 50">
+                    <polyline class="tick-path draw" points="12,26 22,36 38,16" />
+                </svg>
+            </div>
+            <h2 id="resultTitle">Thank you!</h2>
+            <div class="amount-line" id="resultAmount">$50.00 donated</div>
+            <p id="resultMsg">Your donation has been received.</p>
+            <div class="quote" id="resultQuote"></div>
+            <button class="retry-btn" id="retryBtn" style="display:none;" type="button">Try again</button>
+        </div>
+        <div class="confetti-container" id="confettiContainer"></div>
+    </div>
 
-            const inputName = document.getElementById("inputName");
-            const inputNumber = document.getElementById("inputNumber");
-            const inputExpiry = document.getElementById("inputExpiry");
-            const inputCvv = document.getElementById("inputCvv");
-            const inputEmail = document.getElementById("inputEmail");
-            const inputPhone = document.getElementById("inputPhone");
-            const inputMpesaName = document.getElementById("inputMpesaName");
-            const inputMpesaEmail = document.getElementById("inputMpesaEmail");
-            const customAmount = document.getElementById("customAmount");
+    <script>
+        // ---------- Elements ----------
+        const checkoutWindow = document.getElementById("checkoutWindow");
+        const cardWrapper = document.getElementById("cardWrapper");
+        const cardFront = document.getElementById("cardFront");
+        const cardBack = document.getElementById("cardBack");
+        const cardView = document.getElementById("cardView");
+        const mpesaView = document.getElementById("mpesaView");
+        const spinner = document.getElementById("spinner");
+        const statusBox = document.getElementById("statusBox");
+        const statusText = document.getElementById("statusText");
+        const payButton = document.getElementById("payButton");
+        const stkPush = document.getElementById("stkPush");
+        const tierLabel = document.getElementById("tierLabel");
 
-            const cardNumber = document.getElementById("cardNumber");
-            const cardHolder = document.getElementById("cardHolder");
-            const cardExpiry = document.getElementById("cardExpiry");
-            const cardCvv = document.getElementById("cardCvv");
+        const inputName = document.getElementById("inputName");
+        const inputNumber = document.getElementById("inputNumber");
+        const inputExpiry = document.getElementById("inputExpiry");
+        const inputCvv = document.getElementById("inputCvv");
+        const inputEmail = document.getElementById("inputEmail");
+        const inputPhone = document.getElementById("inputPhone");
+        const inputMpesaName = document.getElementById("inputMpesaName");
+        const inputMpesaEmail = document.getElementById("inputMpesaEmail");
+        const customAmount = document.getElementById("customAmount");
 
-            const previewPhone = document.getElementById("previewPhone");
-            const previewName = document.getElementById("previewName");
+        const cardNumber = document.getElementById("cardNumber");
+        const cardHolder = document.getElementById("cardHolder");
+        const cardExpiry = document.getElementById("cardExpiry");
+        const cardCvv = document.getElementById("cardCvv");
 
-            const cardFields = document.getElementById("cardFields");
-            const mpesaFields = document.getElementById("mpesaFields");
-            const methodToggle = document.getElementById("methodToggle");
-            const amountRow = document.getElementById("amountRow");
+        const previewPhone = document.getElementById("previewPhone");
+        const previewName = document.getElementById("previewName");
 
-            const resultOverlay = document.getElementById("resultOverlay");
-            const resultSvg = document.getElementById("resultSvg");
-            const resultTitle = document.getElementById("resultTitle");
-            const resultAmount = document.getElementById("resultAmount");
-            const resultMsg = document.getElementById("resultMsg");
-            const resultQuote = document.getElementById("resultQuote");
-            const retryBtn = document.getElementById("retryBtn");
-            const confettiBox = document.getElementById("confettiContainer");
+        const cardFields = document.getElementById("cardFields");
+        const mpesaFields = document.getElementById("mpesaFields");
+        const methodToggle = document.getElementById("methodToggle");
+        const amountRow = document.getElementById("amountRow");
 
-            // ---------- Config ----------
-            const USD_TO_KES = 130;
-            const toKes = (usd) => Math.round(usd * USD_TO_KES);
+        const resultOverlay = document.getElementById("resultOverlay");
+        const resultSvg = document.getElementById("resultSvg");
+        const resultTitle = document.getElementById("resultTitle");
+        const resultAmount = document.getElementById("resultAmount");
+        const resultMsg = document.getElementById("resultMsg");
+        const resultQuote = document.getElementById("resultQuote");
+        const retryBtn = document.getElementById("retryBtn");
+        const confettiBox = document.getElementById("confettiContainer");
 
-            const AMOUNT_THEMES = [
-                { min: 0, max: 9.99, name: "sprout", tier: "SPROUT",
-                  front: "linear-gradient(135deg, #0f3b2a 0%, #1a9c6b 100%)",
-                  back: "linear-gradient(135deg, #08261b 0%, #0f6a48 100%)" },
-                { min: 10, max: 24.99, name: "ocean", tier: "OCEAN",
-                  front: "linear-gradient(135deg, #052a4a 0%, #0e7ab8 100%)",
-                  back: "linear-gradient(135deg, #031a2f 0%, #0a5078 100%)" },
-                { min: 25, max: 49.99, name: "midnight", tier: "PLATINUM",
-                  front: "linear-gradient(135deg, #111d3e 0%, #163f8b 100%)",
-                  back: "linear-gradient(135deg, #0d1830 0%, #12336f 100%)" },
-                { min: 50, max: 99.99, name: "royal", tier: "ROYAL",
-                  front: "linear-gradient(135deg, #2a0a4a 0%, #6a1fb8 100%)",
-                  back: "linear-gradient(135deg, #190530 0%, #431478 100%)" },
-                { min: 100, max: 249.99, name: "sunset", tier: "SUNSET",
-                  front: "linear-gradient(135deg, #6b1d3a 0%, #e85d3a 100%)",
-                  back: "linear-gradient(135deg, #3d0f22 0%, #a8321f 100%)" },
-                { min: 250, max: 499.99, name: "gold", tier: "GOLD",
-                  front: "linear-gradient(135deg, #3d2a06 0%, #b8862f 100%)",
-                  back: "linear-gradient(135deg, #241804 0%, #7a5a1f 100%)" },
-                { min: 500, max: Infinity, name: "black-diamond", tier: "BLACK DIAMOND",
-                  front: "linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 60%, #4a4a4a 100%)",
-                  back: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)" },
-            ];
+        // ---------- Config ----------
+        const USD_TO_KES = 130;
+        const toKes = (usd) => Math.round(usd * USD_TO_KES);
 
-            function themeForAmount(amount) {
-                for (const t of AMOUNT_THEMES)
-                    if (amount >= t.min && amount <= t.max) return t;
-                return AMOUNT_THEMES[AMOUNT_THEMES.length - 1];
+        const AMOUNT_THEMES = [
+            { min: 0, max: 9.99, name: "sprout", tier: "SPROUT",
+              front: "linear-gradient(135deg, #0f3b2a 0%, #1a9c6b 100%)",
+              back: "linear-gradient(135deg, #08261b 0%, #0f6a48 100%)" },
+            { min: 10, max: 24.99, name: "ocean", tier: "OCEAN",
+              front: "linear-gradient(135deg, #052a4a 0%, #0e7ab8 100%)",
+              back: "linear-gradient(135deg, #031a2f 0%, #0a5078 100%)" },
+            { min: 25, max: 49.99, name: "midnight", tier: "PLATINUM",
+              front: "linear-gradient(135deg, #111d3e 0%, #163f8b 100%)",
+              back: "linear-gradient(135deg, #0d1830 0%, #12336f 100%)" },
+            { min: 50, max: 99.99, name: "royal", tier: "ROYAL",
+              front: "linear-gradient(135deg, #2a0a4a 0%, #6a1fb8 100%)",
+              back: "linear-gradient(135deg, #190530 0%, #431478 100%)" },
+            { min: 100, max: 249.99, name: "sunset", tier: "SUNSET",
+              front: "linear-gradient(135deg, #6b1d3a 0%, #e85d3a 100%)",
+              back: "linear-gradient(135deg, #3d0f22 0%, #a8321f 100%)" },
+            { min: 250, max: 499.99, name: "gold", tier: "GOLD",
+              front: "linear-gradient(135deg, #3d2a06 0%, #b8862f 100%)",
+              back: "linear-gradient(135deg, #241804 0%, #7a5a1f 100%)" },
+            { min: 500, max: Infinity, name: "black-diamond", tier: "BLACK DIAMOND",
+              front: "linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 60%, #4a4a4a 100%)",
+              back: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)" },
+        ];
+
+        function themeForAmount(amount) {
+            for (const t of AMOUNT_THEMES)
+                if (amount >= t.min && amount <= t.max) return t;
+            return AMOUNT_THEMES[AMOUNT_THEMES.length - 1];
+        }
+
+        let lastThemeName = null;
+        function applyThemeForAmount(amount) {
+            const theme = themeForAmount(amount);
+            if (theme.name === lastThemeName) return;
+            lastThemeName = theme.name;
+            cardFront.style.background = theme.front;
+            cardBack.style.background = theme.back;
+            tierLabel.textContent = theme.tier;
+        }
+
+        // ---------- State ----------
+        let currentMethod = "card";
+        let currentAmount = 50; // default $50 on mobile
+        let busy = false;
+        let activeReference = null;
+        let timers = [];
+        let confettiTimers = [];
+
+        function schedule(fn, ms) {
+            const id = setTimeout(fn, ms);
+            timers.push(id);
+            return id;
+        }
+        function clearTimers() {
+            timers.forEach(clearTimeout);
+            timers = [];
+        }
+        function clearConfetti() {
+            confettiTimers.forEach(clearTimeout);
+            confettiTimers = [];
+            confettiBox.innerHTML = "";
+        }
+
+        // ---------- Formatters ----------
+        function formatCardNumber(raw) {
+            const d = raw.replace(/\D/g, "").slice(0, 16);
+            return d.replace(/(.{4})/g, "$1 ").trim();
+        }
+        function formatExpiry(raw) {
+            const d = raw.replace(/\D/g, "").slice(0, 4);
+            if (d.length <= 2) return d;
+            return d.slice(0, 2) + " / " + d.slice(2);
+        }
+        function shortExpiry(formatted) {
+            const d = formatted.replace(/\D/g, "");
+            if (d.length === 0) return "••/••";
+            if (d.length < 4) return d.padEnd(4, "•").replace(/(..)(..)/, "$1/$2");
+            return d.slice(0, 2) + "/" + d.slice(2);
+        }
+        function formatPhone(raw) {
+            return raw.replace(/\D/g, "").slice(0, 10);
+        }
+
+        // ---------- Live card preview ----------
+        function updateCard() {
+            const num = formatCardNumber(inputNumber.value);
+            if (num) {
+                cardNumber.textContent = num;
+                cardNumber.classList.add("filled");
+            } else {
+                cardNumber.textContent = "•••• •••• •••• ••••";
+                cardNumber.classList.remove("filled");
             }
+            const name = inputName.value.trim();
+            if (name) {
+                cardHolder.textContent = name.toUpperCase();
+                cardHolder.classList.add("filled");
+            } else {
+                cardHolder.textContent = "YOUR NAME";
+                cardHolder.classList.remove("filled");
+            }
+            const expDigits = inputExpiry.value.replace(/\D/g, "");
+            if (expDigits.length > 0) {
+                cardExpiry.textContent = shortExpiry(formatExpiry(inputExpiry.value));
+                cardExpiry.classList.add("filled");
+            } else {
+                cardExpiry.textContent = "••/••";
+                cardExpiry.classList.remove("filled");
+            }
+            cardCvv.textContent = inputCvv.value || "•••";
+        }
 
-            let lastThemeName = null;
-            function applyThemeForAmount(amount) {
-                const theme = themeForAmount(amount);
-                if (theme.name === lastThemeName) return;
-                lastThemeName = theme.name;
-                cardFront.style.background = theme.front;
-                cardBack.style.background = theme.back;
-                tierLabel.textContent = theme.tier;
-            }
+        function updateMpesaPreview() {
+            const phone = inputPhone.value.trim();
+            const name = inputMpesaName.value.trim();
+            previewPhone.textContent = phone || "Not provided";
+            previewPhone.classList.toggle("empty", !phone);
+            previewName.textContent = name || "Not provided";
+            previewName.classList.toggle("empty", !name);
+        }
 
-            // ---------- State ----------
-            let currentMethod = "card";
-            let currentAmount = 25;
-            let busy = false;
-            let activeReference = null;
-            let timers = [];
-            let confettiTimers = [];
+        // ---------- Listeners ----------
+        inputNumber.addEventListener("input", (e) => {
+            e.target.value = formatCardNumber(e.target.value);
+            updateCard();
+        });
+        inputExpiry.addEventListener("input", (e) => {
+            e.target.value = formatExpiry(e.target.value);
+            updateCard();
+        });
+        inputName.addEventListener("input", updateCard);
+        inputCvv.addEventListener("input", updateCard);
+        inputCvv.addEventListener("focus", () => cardWrapper.classList.add("flipped"));
+        inputCvv.addEventListener("blur", () => cardWrapper.classList.remove("flipped"));
+        inputPhone.addEventListener("input", (e) => {
+            e.target.value = formatPhone(e.target.value);
+            updateMpesaPreview();
+        });
+        inputMpesaName.addEventListener("input", updateMpesaPreview);
 
-            function schedule(fn, ms) {
-                const id = setTimeout(fn, ms);
-                timers.push(id);
-                return id;
-            }
-            function clearTimers() {
-                timers.forEach(clearTimeout);
-                timers = [];
-            }
-            function clearConfetti() {
-                confettiTimers.forEach(clearTimeout);
-                confettiTimers = [];
-                confettiBox.innerHTML = "";
-            }
+        amountRow.addEventListener("click", (e) => {
+            const btn = e.target.closest(".amount-btn");
+            if (!btn || busy) return;
+            document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentAmount = parseInt(btn.dataset.amount, 10) / 100;
+            customAmount.value = "";
+            applyThemeForAmount(currentAmount);
+            updatePayButton();
+        });
 
-            // ---------- Formatters ----------
-            function formatCardNumber(raw) {
-                const d = raw.replace(/\D/g, "").slice(0, 16);
-                return d.replace(/(.{4})/g, "$1 ").trim();
-            }
-            function formatExpiry(raw) {
-                const d = raw.replace(/\D/g, "").slice(0, 4);
-                if (d.length <= 2) return d;
-                return d.slice(0, 2) + " / " + d.slice(2);
-            }
-            function shortExpiry(formatted) {
-                const d = formatted.replace(/\D/g, "");
-                if (d.length === 0) return "••/••";
-                if (d.length < 4) return d.padEnd(4, "•").replace(/(..)(..)/, "$1/$2");
-                return d.slice(0, 2) + "/" + d.slice(2);
-            }
-            function formatPhone(raw) {
-                return raw.replace(/\D/g, "").slice(0, 10);
-            }
-
-            // ---------- Live card preview ----------
-            function updateCard() {
-                const num = formatCardNumber(inputNumber.value);
-                if (num) {
-                    cardNumber.textContent = num;
-                    cardNumber.classList.add("filled");
-                } else {
-                    cardNumber.textContent = "•••• •••• •••• ••••";
-                    cardNumber.classList.remove("filled");
-                }
-                const name = inputName.value.trim();
-                if (name) {
-                    cardHolder.textContent = name.toUpperCase();
-                    cardHolder.classList.add("filled");
-                } else {
-                    cardHolder.textContent = "YOUR NAME";
-                    cardHolder.classList.remove("filled");
-                }
-                const expDigits = inputExpiry.value.replace(/\D/g, "");
-                if (expDigits.length > 0) {
-                    cardExpiry.textContent = shortExpiry(formatExpiry(inputExpiry.value));
-                    cardExpiry.classList.add("filled");
-                } else {
-                    cardExpiry.textContent = "••/••";
-                    cardExpiry.classList.remove("filled");
-                }
-                cardCvv.textContent = inputCvv.value || "•••";
-            }
-
-            function updateMpesaPreview() {
-                const phone = inputPhone.value.trim();
-                const name = inputMpesaName.value.trim();
-                previewPhone.textContent = phone || "Not provided";
-                previewPhone.classList.toggle("empty", !phone);
-                previewName.textContent = name || "Not provided";
-                previewName.classList.toggle("empty", !name);
-            }
-
-            // ---------- Listeners ----------
-            inputNumber.addEventListener("input", (e) => {
-                e.target.value = formatCardNumber(e.target.value);
-                updateCard();
-            });
-            inputExpiry.addEventListener("input", (e) => {
-                e.target.value = formatExpiry(e.target.value);
-                updateCard();
-            });
-            inputName.addEventListener("input", updateCard);
-            inputCvv.addEventListener("input", updateCard);
-            inputCvv.addEventListener("focus", () => cardWrapper.classList.add("flipped"));
-            inputCvv.addEventListener("blur", () => cardWrapper.classList.remove("flipped"));
-            inputPhone.addEventListener("input", (e) => {
-                e.target.value = formatPhone(e.target.value);
-                updateMpesaPreview();
-            });
-            inputMpesaName.addEventListener("input", updateMpesaPreview);
-
-            amountRow.addEventListener("click", (e) => {
-                const btn = e.target.closest(".amount-btn");
-                if (!btn || busy) return;
+        customAmount.addEventListener("input", () => {
+            const v = parseFloat(customAmount.value);
+            if (!isNaN(v) && v > 0) {
+                currentAmount = v;
                 document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
-                btn.classList.add("active");
-                currentAmount = parseInt(btn.dataset.amount, 10) / 100;
-                customAmount.value = "";
-                applyThemeForAmount(currentAmount);
-                updatePayButton();
-            });
+            }
+            applyThemeForAmount(currentAmount);
+            updatePayButton();
+        });
 
-            customAmount.addEventListener("input", () => {
-                const v = parseFloat(customAmount.value);
-                if (!isNaN(v) && v > 0) {
-                    currentAmount = v;
-                    document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
+        function updatePayButton() {
+            if (busy) return;
+            payButton.textContent = `Donate $${currentAmount.toFixed(2)}`;
+            payButton.classList.toggle("mpesa-mode", currentMethod === "mpesa");
+        }
+
+        methodToggle.addEventListener("click", (e) => {
+            const btn = e.target.closest("button");
+            if (!btn || busy) return;
+            const method = btn.dataset.method;
+            if (method === currentMethod) return;
+            currentMethod = method;
+            methodToggle.classList.toggle("mpesa", method === "mpesa");
+            checkoutWindow.classList.toggle("mpesa-mode", method === "mpesa");
+            methodToggle.querySelectorAll("button").forEach((b) =>
+                b.classList.toggle("active", b.dataset.method === method)
+            );
+            cardFields.classList.toggle("active", method === "card");
+            mpesaFields.classList.toggle("active", method === "mpesa");
+            cardView.classList.toggle("hidden", method !== "card");
+            mpesaView.classList.toggle("show", method === "mpesa");
+            statusBox.classList.toggle("hidden", method === "mpesa");
+            if (method !== "card") cardWrapper.classList.remove("flipped");
+            if (method === "mpesa") updateMpesaPreview();
+            updatePayButton();
+        });
+
+        // ---------- State transitions ----------
+        function resetPayment() {
+            clearTimers();
+            checkoutWindow.classList.remove("processing", "success");
+            cardWrapper.classList.remove("processing", "flipped");
+            stkPush.classList.remove("show");
+            spinner.style.display = "none";
+            statusText.textContent = "Ready to donate";
+            statusText.style.color = "#222";
+            payButton.disabled = false;
+            updatePayButton();
+            busy = false;
+        }
+
+        function processingState(label) {
+            busy = true;
+            checkoutWindow.classList.add("processing");
+            payButton.disabled = true;
+            payButton.textContent = "Processing...";
+            if (currentMethod === "mpesa") {
+                stkPush.classList.add("show");
+            } else {
+                cardWrapper.classList.add("processing");
+                spinner.style.display = "block";
+                statusText.textContent = label || "Processing secure transaction...";
+                statusText.style.color = "#18a879";
+            }
+        }
+
+        function launchConfetti() {
+            clearConfetti();
+            const colors = ["#ffffff", "#ffe066", "#ffb3c1", "#a0e7c8", "#b3d4ff", "#ffd6a5"];
+            const shapes = ["square", "circle", "rect"];
+            for (let i = 0; i < 90; i++) {
+                const c = document.createElement("div");
+                c.className = "confetti";
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                const size = 6 + Math.random() * 8;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const left = Math.random() * 100;
+                const rotStart = Math.random() * 360;
+                const rotEnd = rotStart + (Math.random() * 720 - 360);
+                const dx = (Math.random() - 0.5) * 200;
+                const duration = 2600 + Math.random() * 2200;
+                const delay = Math.random() * 400;
+                c.style.background = color;
+                c.style.left = left + "%";
+                c.style.width = size + "px";
+                c.style.height = (shape === "rect" ? size * 0.45 : size) + "px";
+                c.style.borderRadius = shape === "circle" ? "50%" : (shape === "rect" ? "2px" : "1px");
+                c.style.opacity = "1";
+                c.style.position = "absolute";
+                confettiBox.appendChild(c);
+                c.animate(
+                    [
+                        { transform: `translate(0, -20px) rotate(${rotStart}deg)`, opacity: 1 },
+                        { transform: `translate(${dx}px, ${window.innerHeight + 60}px) rotate(${rotEnd}deg)`, opacity: 0.85 },
+                    ],
+                    { duration, delay, easing: "cubic-bezier(.25,.6,.4,1)", fill: "forwards" }
+                );
+                const cleanup = setTimeout(() => {
+                    if (c.parentNode) c.parentNode.removeChild(c);
+                }, duration + delay + 100);
+                confettiTimers.push(cleanup);
+            }
+        }
+
+        function showSuccess(amountUsd) {
+            stkPush.classList.remove("show");
+            checkoutWindow.classList.remove("processing");
+            checkoutWindow.classList.add("success");
+            cardWrapper.classList.remove("processing");
+            spinner.style.display = "none";
+            payButton.textContent = "Donation Complete";
+            if (currentMethod === "card") {
+                statusText.textContent = "Donation Successful";
+                statusText.style.color = "#18a879";
+            }
+            resultOverlay.classList.remove("fail");
+            resultOverlay.classList.add("success");
+            resultSvg.innerHTML = `<polyline class="tick-path draw" points="12,26 22,36 38,16" />`;
+            resultTitle.textContent = "Thank you for saving lives 💚";
+            resultAmount.textContent = `$${amountUsd.toFixed(2)} donated`;
+            resultMsg.textContent = "Your generosity just helped provide lifesaving care to someone in need.";
+            resultQuote.textContent = "\u201CNo one has ever become poor by giving.\u201D — Anne Frank";
+            retryBtn.style.display = "none";
+            resultOverlay.classList.remove("show");
+            void resultOverlay.offsetWidth;
+            requestAnimationFrame(() => {
+                resultOverlay.classList.add("show");
+                launchConfetti();
+            });
+        }
+
+        function showFailure(reason) {
+            stkPush.classList.remove("show");
+            checkoutWindow.classList.remove("processing", "success");
+            cardWrapper.classList.remove("processing", "flipped");
+            spinner.style.display = "none";
+            if (currentMethod === "card") {
+                statusText.textContent = "Donation Failed";
+                statusText.style.color = "#e5484d";
+            }
+            payButton.textContent = "Try Again";
+            payButton.disabled = false;
+            busy = false;
+            updatePayButton();
+            resultOverlay.classList.remove("success");
+            resultOverlay.classList.add("fail");
+            resultSvg.innerHTML = `
+                <line class="cross-path draw" x1="16" y1="16" x2="34" y2="34" />
+                <line class="cross-path draw" x1="34" y1="16" x2="16" y2="34" />
+            `;
+            resultTitle.textContent = "Donation couldn't be completed";
+            resultAmount.textContent = `$${currentAmount.toFixed(2)} not charged`;
+            resultMsg.textContent = reason || "Something went wrong. You were not charged.";
+            resultQuote.textContent = "";
+            retryBtn.style.display = "inline-block";
+            resultOverlay.classList.remove("show");
+            void resultOverlay.offsetWidth;
+            requestAnimationFrame(() => resultOverlay.classList.add("show"));
+        }
+
+        function hideResult() {
+            resultOverlay.classList.remove("show", "success", "fail");
+            clearConfetti();
+            resetPayment();
+        }
+
+        retryBtn.addEventListener("click", hideResult);
+
+        // ---------- Payment flow ----------
+        payButton.addEventListener("click", async () => {
+            if (busy) return;
+            if (currentMethod === "mpesa") await startMpesa();
+            else await startCard();
+        });
+
+        async function startMpesa() {
+            const phone = inputPhone.value.trim();
+            const name = inputMpesaName.value.trim();
+            const email = inputMpesaEmail.value.trim();
+            if (!/^0(7|1)\d{8}$/.test(phone) && !/^254(7|1)\d{8}$/.test(phone)) {
+                return showInlineError("Enter a valid Safaricom number (07XXXXXXXX)");
+            }
+            if (!name) return showInlineError("Enter your full name");
+            if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
+            resetPayment();
+            clearConfetti();
+            schedule(() => processingState("Sending STK Push..."), 100);
+            const amountKes = toKes(currentAmount);
+            try {
+                const res = await fetch("/api/payments/paystack/initialize", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, name, phone, amount_kes: amountKes }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Unable to start M-Pesa");
+                activeReference = data.reference;
+                await pollMpesa(data.reference, currentAmount);
+            } catch (err) {
+                console.error(err);
+                showFailure(err.message);
+            }
+        }
+
+        async function pollMpesa(reference, displayUsd) {
+            const startTime = Date.now();
+            const MAX_WAIT_MS = 90 * 1000;
+            const INTERVAL = 3000;
+            while (Date.now() - startTime < MAX_WAIT_MS) {
+                await new Promise((r) => setTimeout(r, INTERVAL));
+                try {
+                    const res = await fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`);
+                    const data = await res.json();
+                    if (!res.ok) continue;
+                    if (data.paid) {
+                        showSuccess(displayUsd);
+                        return;
+                    }
+                    if (["failed", "abandoned", "reversed"].includes(String(data.status || "").toLowerCase())) {
+                        showFailure(`M-Pesa payment ${data.status}. Please try again.`);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("poll error:", e.message);
                 }
-                applyThemeForAmount(currentAmount);
-                updatePayButton();
-            });
+            }
+            showFailure("STK Push timed out. If you entered your PIN, please check back in a moment.");
+        }
 
-            function updatePayButton() {
-                if (busy) return;
-                payButton.textContent = `Donate $${currentAmount.toFixed(2)}`;
-                payButton.classList.toggle("mpesa-mode", currentMethod === "mpesa");
+        async function startCard() {
+            const name = inputName.value.trim();
+            const cardNum = inputNumber.value.replace(/\s/g, "");
+            const expiry = inputExpiry.value;
+            const cvv = inputCvv.value;
+            const email = inputEmail.value.trim();
+            if (!name) return showInlineError("Enter the cardholder name");
+            if (!/^\d{13,19}$/.test(cardNum)) return showInlineError("Enter a valid card number");
+            if (!/^\d{2}\s*\/\s*\d{2}$/.test(expiry)) return showInlineError("Enter expiry as MM / YY");
+            if (!/^\d{3,4}$/.test(cvv)) return showInlineError("Enter a valid CVV");
+            if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
+            resetPayment();
+            clearConfetti();
+            schedule(() => processingState("Charging card securely..."), 100);
+            const amountKes = toKes(currentAmount);
+            try {
+                const res = await fetch("/api/payments/paystack/charge", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email, name, amount_kes: amountKes,
+                        card_number: cardNum, expiry, cvv,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Unable to charge card");
+                activeReference = data.reference;
+                inputNumber.value = "";
+                inputCvv.value = "";
+                cardNumber.textContent = "•••• •••• •••• ••••";
+                cardNumber.classList.remove("filled");
+                cardCvv.textContent = "•••";
+                await handleChargeResponse(data);
+            } catch (err) {
+                console.error(err);
+                showFailure(err.message);
+            }
+        }
+
+        async function handleChargeResponse(data) {
+            const status = String(data.status || "").toLowerCase();
+            if (status === "success" || data.paid) {
+                showSuccess(currentAmount);
+                return;
+            }
+            if (status === "send_pin") {
+                const pin = prompt("Enter your card PIN (4 digits):");
+                if (!pin) return showFailure("PIN required");
+                return submitCode("pin", pin);
+            }
+            if (status === "send_otp" || status === "send_phone" || status === "send_sms") {
+                const otp = prompt(data.display_text || "Enter the OTP sent to your phone:");
+                if (!otp) return showFailure("OTP required");
+                return submitCode("otp", otp);
+            }
+            if (status === "send_birthday") {
+                const dob = prompt("Enter your date of birth (YYYY-MM-DD):");
+                if (!dob) return showFailure("Date of birth required");
+                return submitCode("birthday", dob);
+            }
+            if (status === "send_address") {
+                const addr = prompt("Enter your billing address:");
+                if (!addr) return showFailure("Address required");
+                return submitCode("address", addr);
+            }
+            if (status === "open_url" && data.authorization_url) {
+                window.location.href = data.authorization_url;
+                return;
+            }
+            showFailure(data.message || `Payment status: ${status}`);
+        }
+
+        async function submitCode(type, value) {
+            try {
+                const res = await fetch("/api/payments/paystack/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ reference: activeReference, type, value }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Unable to submit");
+                await handleChargeResponse(data);
+            } catch (err) {
+                console.error(err);
+                showFailure(err.message);
+            }
+        }
+
+        function showInlineError(msg) {
+            statusText.textContent = msg;
+            statusText.style.color = "#e5484d";
+            setTimeout(() => {
+                statusText.textContent = "Ready to donate";
+                statusText.style.color = "#222";
+            }, 3000);
+        }
+
+        // ---------- Init ----------
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const usd = Number(params.get("amount_usd"));
+            const method = params.get("method");
+            const phone = params.get("phone");
+            const reference = params.get("reference");
+
+            // Default to $50 on mobile (already set), but allow URL override
+            if (Number.isFinite(usd) && usd > 0) {
+                currentAmount = usd;
+                document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
+                customAmount.value = String(usd);
+            } else {
+                // Ensure default active button matches currentAmount ($50)
+                document.querySelectorAll(".amount-btn").forEach((b) => {
+                    const val = parseInt(b.dataset.amount, 10) / 100;
+                    b.classList.toggle("active", Math.abs(val - currentAmount) < 0.001);
+                });
             }
 
-            methodToggle.addEventListener("click", (e) => {
-                const btn = e.target.closest("button");
-                if (!btn || busy) return;
-                const method = btn.dataset.method;
-                if (method === currentMethod) return;
+            if (method === "mpesa" || method === "card") {
                 currentMethod = method;
                 methodToggle.classList.toggle("mpesa", method === "mpesa");
                 checkoutWindow.classList.toggle("mpesa-mode", method === "mpesa");
@@ -2025,354 +2140,34 @@
                 cardView.classList.toggle("hidden", method !== "card");
                 mpesaView.classList.toggle("show", method === "mpesa");
                 statusBox.classList.toggle("hidden", method === "mpesa");
-                if (method !== "card") cardWrapper.classList.remove("flipped");
-                if (method === "mpesa") updateMpesaPreview();
-                updatePayButton();
-            });
-
-            // ---------- State transitions ----------
-            function resetPayment() {
-                clearTimers();
-                checkoutWindow.classList.remove("processing", "success");
-                cardWrapper.classList.remove("processing", "flipped");
-                stkPush.classList.remove("show");
-                spinner.style.display = "none";
-                statusText.textContent = "Ready to donate";
-                statusText.style.color = "#222";
-                payButton.disabled = false;
-                updatePayButton();
-                busy = false;
             }
 
-            function processingState(label) {
-                busy = true;
-                checkoutWindow.classList.add("processing");
-                payButton.disabled = true;
-                payButton.textContent = "Processing...";
-                if (currentMethod === "mpesa") {
-                    stkPush.classList.add("show");
-                } else {
-                    cardWrapper.classList.add("processing");
-                    spinner.style.display = "block";
-                    statusText.textContent = label || "Processing secure transaction...";
-                    statusText.style.color = "#18a879";
-                }
-            }
-
-            function launchConfetti() {
-                clearConfetti();
-                const colors = ["#ffffff", "#ffe066", "#ffb3c1", "#a0e7c8", "#b3d4ff", "#ffd6a5"];
-                const shapes = ["square", "circle", "rect"];
-                for (let i = 0; i < 90; i++) {
-                    const c = document.createElement("div");
-                    c.className = "confetti";
-                    const shape = shapes[Math.floor(Math.random() * shapes.length)];
-                    const size = 6 + Math.random() * 8;
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    const left = Math.random() * 100;
-                    const rotStart = Math.random() * 360;
-                    const rotEnd = rotStart + (Math.random() * 720 - 360);
-                    const dx = (Math.random() - 0.5) * 200;
-                    const duration = 2600 + Math.random() * 2200;
-                    const delay = Math.random() * 400;
-                    c.style.background = color;
-                    c.style.left = left + "%";
-                    c.style.width = size + "px";
-                    c.style.height = (shape === "rect" ? size * 0.45 : size) + "px";
-                    c.style.borderRadius = shape === "circle" ? "50%" : (shape === "rect" ? "2px" : "1px");
-                    c.style.opacity = "1";
-                    c.style.position = "absolute";
-                    confettiBox.appendChild(c);
-                    c.animate(
-                        [
-                            { transform: `translate(0, -20px) rotate(${rotStart}deg)`, opacity: 1 },
-                            { transform: `translate(${dx}px, ${window.innerHeight + 60}px) rotate(${rotEnd}deg)`, opacity: 0.85 },
-                        ],
-                        { duration, delay, easing: "cubic-bezier(.25,.6,.4,1)", fill: "forwards" }
-                    );
-                    const cleanup = setTimeout(() => {
-                        if (c.parentNode) c.parentNode.removeChild(c);
-                    }, duration + delay + 100);
-                    confettiTimers.push(cleanup);
-                }
-            }
-
-            function showSuccess(amountUsd) {
-                stkPush.classList.remove("show");
-                checkoutWindow.classList.remove("processing");
-                checkoutWindow.classList.add("success");
-                cardWrapper.classList.remove("processing");
-                spinner.style.display = "none";
-                payButton.textContent = "Donation Complete";
-                if (currentMethod === "card") {
-                    statusText.textContent = "Donation Successful";
-                    statusText.style.color = "#18a879";
-                }
-                resultOverlay.classList.remove("fail");
-                resultOverlay.classList.add("success");
-                resultSvg.innerHTML = `<polyline class="tick-path draw" points="12,26 22,36 38,16" />`;
-                resultTitle.textContent = "Thank you for saving lives 💚";
-                resultAmount.textContent = `$${amountUsd.toFixed(2)} donated`;
-                resultMsg.textContent = "Your generosity just helped provide lifesaving care to someone in need.";
-                resultQuote.textContent = "\u201CNo one has ever become poor by giving.\u201D — Anne Frank";
-                retryBtn.style.display = "none";
-                resultOverlay.classList.remove("show");
-                void resultOverlay.offsetWidth;
-                requestAnimationFrame(() => {
-                    resultOverlay.classList.add("show");
-                    launchConfetti();
-                });
-            }
-
-            function showFailure(reason) {
-                stkPush.classList.remove("show");
-                checkoutWindow.classList.remove("processing", "success");
-                cardWrapper.classList.remove("processing", "flipped");
-                spinner.style.display = "none";
-                if (currentMethod === "card") {
-                    statusText.textContent = "Donation Failed";
-                    statusText.style.color = "#e5484d";
-                }
-                payButton.textContent = "Try Again";
-                payButton.disabled = false;
-                busy = false;
-                updatePayButton();
-                resultOverlay.classList.remove("success");
-                resultOverlay.classList.add("fail");
-                resultSvg.innerHTML = `
-                    <line class="cross-path draw" x1="16" y1="16" x2="34" y2="34" />
-                    <line class="cross-path draw" x1="34" y1="16" x2="16" y2="34" />
-                `;
-                resultTitle.textContent = "Donation couldn't be completed";
-                resultAmount.textContent = `$${currentAmount.toFixed(2)} not charged`;
-                resultMsg.textContent = reason || "Something went wrong. You were not charged.";
-                resultQuote.textContent = "";
-                retryBtn.style.display = "inline-block";
-                resultOverlay.classList.remove("show");
-                void resultOverlay.offsetWidth;
-                requestAnimationFrame(() => resultOverlay.classList.add("show"));
-            }
-
-            function hideResult() {
-                resultOverlay.classList.remove("show", "success", "fail");
-                clearConfetti();
-                resetPayment();
-            }
-
-            retryBtn.addEventListener("click", hideResult);
-
-            // ---------- Payment flow ----------
-            payButton.addEventListener("click", async () => {
-                if (busy) return;
-                if (currentMethod === "mpesa") await startMpesa();
-                else await startCard();
-            });
-
-            async function startMpesa() {
-                const phone = inputPhone.value.trim();
-                const name = inputMpesaName.value.trim();
-                const email = inputMpesaEmail.value.trim();
-                if (!/^0(7|1)\d{8}$/.test(phone) && !/^254(7|1)\d{8}$/.test(phone)) {
-                    return showInlineError("Enter a valid Safaricom number (07XXXXXXXX)");
-                }
-                if (!name) return showInlineError("Enter your full name");
-                if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
-                resetPayment();
-                clearConfetti();
-                schedule(() => processingState("Sending STK Push..."), 100);
-                const amountKes = toKes(currentAmount);
-                try {
-                    const res = await fetch("/api/payments/paystack/initialize", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email, name, phone, amount_kes: amountKes }),
-                    });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || "Unable to start M-Pesa");
-                    activeReference = data.reference;
-                    await pollMpesa(data.reference, currentAmount);
-                } catch (err) {
-                    console.error(err);
-                    showFailure(err.message);
-                }
-            }
-
-            async function pollMpesa(reference, displayUsd) {
-                const startTime = Date.now();
-                const MAX_WAIT_MS = 90 * 1000;
-                const INTERVAL = 3000;
-                while (Date.now() - startTime < MAX_WAIT_MS) {
-                    await new Promise((r) => setTimeout(r, INTERVAL));
-                    try {
-                        const res = await fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`);
-                        const data = await res.json();
-                        if (!res.ok) continue;
-                        if (data.paid) {
-                            showSuccess(displayUsd);
-                            return;
-                        }
-                        if (["failed", "abandoned", "reversed"].includes(String(data.status || "").toLowerCase())) {
-                            showFailure(`M-Pesa payment ${data.status}. Please try again.`);
-                            return;
-                        }
-                    } catch (e) {
-                        console.warn("poll error:", e.message);
-                    }
-                }
-                showFailure("STK Push timed out. If you entered your PIN, please check back in a moment.");
-            }
-
-            async function startCard() {
-                const name = inputName.value.trim();
-                const cardNum = inputNumber.value.replace(/\s/g, "");
-                const expiry = inputExpiry.value;
-                const cvv = inputCvv.value;
-                const email = inputEmail.value.trim();
-                if (!name) return showInlineError("Enter the cardholder name");
-                if (!/^\d{13,19}$/.test(cardNum)) return showInlineError("Enter a valid card number");
-                if (!/^\d{2}\s*\/\s*\d{2}$/.test(expiry)) return showInlineError("Enter expiry as MM / YY");
-                if (!/^\d{3,4}$/.test(cvv)) return showInlineError("Enter a valid CVV");
-                if (!email || !email.includes("@")) return showInlineError("Enter a valid email");
-                resetPayment();
-                clearConfetti();
-                schedule(() => processingState("Charging card securely..."), 100);
-                const amountKes = toKes(currentAmount);
-                try {
-                    const res = await fetch("/api/payments/paystack/charge", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email, name, amount_kes: amountKes,
-                            card_number: cardNum, expiry, cvv,
-                        }),
-                    });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || "Unable to charge card");
-                    activeReference = data.reference;
-                    inputNumber.value = "";
-                    inputCvv.value = "";
-                    cardNumber.textContent = "•••• •••• •••• ••••";
-                    cardNumber.classList.remove("filled");
-                    cardCvv.textContent = "•••";
-                    await handleChargeResponse(data);
-                } catch (err) {
-                    console.error(err);
-                    showFailure(err.message);
-                }
-            }
-
-            async function handleChargeResponse(data) {
-                const status = String(data.status || "").toLowerCase();
-                if (status === "success" || data.paid) {
-                    showSuccess(currentAmount);
-                    return;
-                }
-                if (status === "send_pin") {
-                    const pin = prompt("Enter your card PIN (4 digits):");
-                    if (!pin) return showFailure("PIN required");
-                    return submitCode("pin", pin);
-                }
-                if (status === "send_otp" || status === "send_phone" || status === "send_sms") {
-                    const otp = prompt(data.display_text || "Enter the OTP sent to your phone:");
-                    if (!otp) return showFailure("OTP required");
-                    return submitCode("otp", otp);
-                }
-                if (status === "send_birthday") {
-                    const dob = prompt("Enter your date of birth (YYYY-MM-DD):");
-                    if (!dob) return showFailure("Date of birth required");
-                    return submitCode("birthday", dob);
-                }
-                if (status === "send_address") {
-                    const addr = prompt("Enter your billing address:");
-                    if (!addr) return showFailure("Address required");
-                    return submitCode("address", addr);
-                }
-                if (status === "open_url" && data.authorization_url) {
-                    window.location.href = data.authorization_url;
-                    return;
-                }
-                showFailure(data.message || `Payment status: ${status}`);
-            }
-
-            async function submitCode(type, value) {
-                try {
-                    const res = await fetch("/api/payments/paystack/submit", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ reference: activeReference, type, value }),
-                    });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || "Unable to submit");
-                    await handleChargeResponse(data);
-                } catch (err) {
-                    console.error(err);
-                    showFailure(err.message);
-                }
-            }
-
-            function showInlineError(msg) {
-                statusText.textContent = msg;
-                statusText.style.color = "#e5484d";
-                setTimeout(() => {
-                    statusText.textContent = "Ready to donate";
-                    statusText.style.color = "#222";
-                }, 3000);
-            }
-
-            // ---------- Init ----------
-            document.addEventListener("DOMContentLoaded", () => {
-                const params = new URLSearchParams(window.location.search);
-                const usd = Number(params.get("amount_usd"));
-                const method = params.get("method");
-                const phone = params.get("phone");
-                const reference = params.get("reference");
-
-                if (Number.isFinite(usd) && usd > 0) {
-                    currentAmount = usd;
-                    document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
-                    customAmount.value = String(usd);
-                }
-
-                if (method === "mpesa" || method === "card") {
-                    currentMethod = method;
-                    methodToggle.classList.toggle("mpesa", method === "mpesa");
-                    checkoutWindow.classList.toggle("mpesa-mode", method === "mpesa");
-                    methodToggle.querySelectorAll("button").forEach((b) =>
-                        b.classList.toggle("active", b.dataset.method === method)
-                    );
-                    cardFields.classList.toggle("active", method === "card");
-                    mpesaFields.classList.toggle("active", method === "mpesa");
-                    cardView.classList.toggle("hidden", method !== "card");
-                    mpesaView.classList.toggle("show", method === "mpesa");
-                    statusBox.classList.toggle("hidden", method === "mpesa");
-                }
-
-                if (phone) {
-                    inputPhone.value = phone.replace(/^\+?254/, "0").replace(/\D/g, "").slice(0, 10);
-                    updateMpesaPreview();
-                }
-
-                if (reference) {
-                    processingState("Confirming payment...");
-                    fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`)
-                        .then((r) => r.json())
-                        .then((d) => {
-                            if (d.paid) showSuccess(currentAmount);
-                            else showFailure(`Payment status: ${d.status}`);
-                        })
-                        .catch(() => showFailure("Could not verify payment"));
-                }
-
-                applyThemeForAmount(currentAmount);
-                updateCard();
+            if (phone) {
+                inputPhone.value = phone.replace(/^\+?254/, "0").replace(/\D/g, "").slice(0, 10);
                 updateMpesaPreview();
-                updatePayButton();
-            });
+            }
 
-            window.addEventListener("beforeunload", () => {
-                clearTimers();
-                clearConfetti();
-            });
-        </script>
-    </body>
+            if (reference) {
+                processingState("Confirming payment...");
+                fetch(`/api/payments/paystack/verify/${encodeURIComponent(reference)}`)
+                    .then((r) => r.json())
+                    .then((d) => {
+                        if (d.paid) showSuccess(currentAmount);
+                        else showFailure(`Payment status: ${d.status}`);
+                    })
+                    .catch(() => showFailure("Could not verify payment"));
+            }
+
+            applyThemeForAmount(currentAmount);
+            updateCard();
+            updateMpesaPreview();
+            updatePayButton();
+        });
+
+        window.addEventListener("beforeunload", () => {
+            clearTimers();
+            clearConfetti();
+        });
+    </script>
+</body>
 </html>

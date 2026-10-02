@@ -1,84 +1,392 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dalla Community Hub | Healthcare for All</title>
-        <meta
-            name="description"
-            content="Dalla Community Hub bridges the gap to medical access for Kenya's most vulnerable. Donate today."
-        />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Dalla Community Hub | Healthcare for All</title>
+    <meta name="description" content="Dalla Community Hub bridges the gap to medical access for Kenya's most vulnerable. Donate today." />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link rel="preconnect" href="https://images.unsplash.com" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-            rel="stylesheet"
-        />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-        <style>
-            /* =========================================================
-   CRITICAL CSS — inline for instant first paint
+    <style>
+        /* =========================================================
+   RESET & BASE — MOBILE FIRST
 ========================================================= */
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-            html {
-                scroll-behavior: smooth;
-                -webkit-text-size-adjust: 100%;
-            }
-            body {
-                font-family:
-                    Inter,
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Segoe UI",
-                    Roboto,
-                    Arial,
-                    sans-serif;
-                background: #fbfbfd;
-                color: #1d1d1f;
-                line-height: 1.5;
-                -webkit-font-smoothing: antialiased;
-                overflow-x: hidden;
-            }
-            img {
-                max-width: 100%;
-                display: block;
-            }
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-            button {
-                font: inherit;
-                cursor: pointer;
-                border: 0;
-                background: none;
-                color: inherit;
-            }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #fbfbfd;
+            color: #1d1d1f;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        button {
+            font: inherit;
+            cursor: pointer;
+            border: 0;
+            background: none;
+            color: inherit;
+        }
 
-            /* Layout primitives */
+        /* ---------- Layout primitives (mobile first) ---------- */
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .between {
+            justify-content: space-between;
+        }
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        .cols-2 {
+            grid-template-columns: 1fr;
+        }
+        .cols-3 {
+            grid-template-columns: 1fr;
+        }
+        .cols-4 {
+            grid-template-columns: 1fr 1fr;
+        }
+        .hide-md {
+            display: none;
+        }
+
+        /* ---------- NAV (mobile) ---------- */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(251, 251, 253, 0.92);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            height: 56px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #0066cc;
+            color: #fff;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+            flex-shrink: 0;
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: -0.2px;
+        }
+        .nav-links {
+            display: none;
+        }
+
+        /* Buttons — less bold on mobile */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+            white-space: nowrap;
+            letter-spacing: 0.1px;
+        }
+        .btn-primary {
+            background: #0066cc;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(0, 102, 204, 0.25);
+        }
+        .btn-primary:hover {
+            background: #0055b3;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+        }
+        .btn-dark {
+            background: #1d1d1f;
+            color: #fff;
+        }
+        .btn-dark:hover {
+            background: #000;
+            transform: translateY(-1px);
+        }
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .btn-lg {
+            padding: 14px 28px;
+            font-size: 15px;
+        }
+
+        /* ---------- HERO (mobile) ---------- */
+        .hero {
+            position: relative;
+            min-height: 90vh;
+            min-height: 90svh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 90px 20px 50px;
+            background: #000;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url("images/hero-bg.png");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.45;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 900px;
+            color: #fff;
+        }
+        .hero h1 {
+            font-size: clamp(32px, 9vw, 88px);
+            font-weight: 700; /* less bold on mobile */
+            letter-spacing: -1.2px;
+            line-height: 1.08;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+        }
+        .hero p {
+            font-size: clamp(15px, 3.5vw, 22px);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 640px;
+            margin: 0 auto 32px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            line-height: 1.6;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ---------- SECTIONS (mobile) ---------- */
+        section {
+            padding: 56px 0;
+        }
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0066cc;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: clamp(24px, 7vw, 48px);
+            font-weight: 700; /* less bold on mobile */
+            letter-spacing: -0.8px;
+            line-height: 1.12;
+            margin-bottom: 16px;
+        }
+        .lead {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #4b4b4f;
+            line-height: 1.65;
+        }
+
+        /* Cards — mobile */
+        .card {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 20px;
+            padding: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.12);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 16px;
+        }
+
+        /* Stats — mobile */
+        .stat-bar {
+            background: #1d1d1f;
+            color: #fff;
+            padding: 48px 0;
+        }
+        .stat-num {
+            font-size: clamp(32px, 9vw, 64px);
+            font-weight: 700; /* less bold on mobile */
+            letter-spacing: -1.5px;
+            background: linear-gradient(180deg, #fff, #a1a1a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 10px;
+        }
+
+        /* CTA Banner — mobile */
+        .cta-banner {
+            padding: 56px 0;
+            background: linear-gradient(135deg, #0066cc 0%, #0055b3 100%);
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-banner::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .cta-banner h2 {
+            color: #fff;
+            position: relative;
+            font-weight: 700;
+        }
+        .cta-banner p {
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            max-width: 640px;
+            margin: 0 auto 32px;
+            font-size: clamp(14px, 3.5vw, 18px);
+            line-height: 1.6;
+        }
+        .cta-banner .btn-primary {
+            background: #fff;
+            color: #0066cc;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .cta-banner .btn-primary:hover {
+            background: #f5f5f7;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Footer — mobile */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eaeaea;
+            padding: 48px 0 28px;
+        }
+        .foot-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-bottom: 36px;
+        }
+        .social {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f5f5f7;
+            display: grid;
+            place-items: center;
+            color: #6c6c70;
+            transition: all 0.2s;
+        }
+        .social:hover {
+            background: #0066cc;
+            color: #fff;
+        }
+        .foot-bottom {
+            border-top: 1px solid #eaeaea;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 13px;
+            color: #8e8e93;
+            text-align: center;
+        }
+        .foot-bottom .row {
+            justify-content: center;
+        }
+
+        /* ---------- REVEAL ---------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+   TABLET & DESKTOP (≥ 768px)
+========================================================= */
+        @media (min-width: 768px) {
             .wrap {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 24px;
+                padding: 0 32px;
             }
             .row {
-                display: flex;
-                align-items: center;
                 gap: 16px;
             }
-            .between {
-                justify-content: space-between;
-            }
             .grid {
-                display: grid;
                 gap: 24px;
             }
             .cols-2 {
@@ -90,40 +398,17 @@
             .cols-4 {
                 grid-template-columns: repeat(4, 1fr);
             }
-            .hide-md {
-                display: flex;
-            }
 
-            /* Nav */
             .nav {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 50;
-                background: rgba(251, 251, 253, 0.85);
-                backdrop-filter: saturate(180%) blur(20px);
-                -webkit-backdrop-filter: saturate(180%) blur(20px);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.06);
                 height: 64px;
-                display: flex;
-                align-items: center;
             }
             .logo-mark {
                 width: 38px;
                 height: 38px;
                 border-radius: 11px;
-                background: #0066cc;
-                color: #fff;
-                display: grid;
-                place-items: center;
-                box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-                flex-shrink: 0;
             }
             .logo-text {
-                font-weight: 700;
                 font-size: 17px;
-                letter-spacing: -0.2px;
             }
             .nav-links {
                 display: flex;
@@ -139,1069 +424,425 @@
             .nav-links a:hover {
                 color: #1d1d1f;
             }
-            .btn {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                padding: 10px 20px;
-                border-radius: 999px;
-                font-weight: 600;
-                font-size: 14px;
-                transition:
-                    transform 0.15s ease,
-                    box-shadow 0.2s ease,
-                    background 0.2s ease;
-                white-space: nowrap;
-            }
-            .btn-primary {
-                background: #0066cc;
-                color: #fff;
-                box-shadow: 0 4px 14px rgba(0, 102, 204, 0.3);
-            }
-            .btn-primary:hover {
-                background: #0055b3;
-                transform: translateY(-1px);
-                box-shadow: 0 8px 20px rgba(0, 102, 204, 0.35);
-            }
-            .btn-dark {
-                background: #1d1d1f;
-                color: #fff;
-            }
-            .btn-dark:hover {
-                background: #000;
-                transform: translateY(-1px);
-            }
-            .btn-ghost {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                color: #fff;
-            }
-            .btn-ghost:hover {
-                background: rgba(255, 255, 255, 0.2);
-            }
-            .btn-lg {
-                padding: 16px 32px;
-                font-size: 16px;
-            }
 
-            /* Hero */
             .hero {
-                position: relative;
                 min-height: 100vh;
                 min-height: 100svh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 120px 24px 60px;
-                background: #000;
-                overflow: hidden;
-            }
-            .hero-bg {
-                position: absolute;
-                inset: 0;
-                background-image: url("https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1600&q=70");
-                background-size: cover;
-                background-position: center;
-                opacity: 0.45;
-            }
-            .hero-content {
-                position: relative;
-                z-index: 1;
-                text-align: center;
-                max-width: 900px;
-                color: #fff;
+                padding: 120px 32px 60px;
             }
             .hero h1 {
-                font-size: clamp(40px, 7vw, 88px);
                 font-weight: 800;
                 letter-spacing: -2px;
-                line-height: 1.05;
-                margin-bottom: 24px;
-                text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
             }
             .hero p {
-                font-size: clamp(16px, 1.8vw, 22px);
-                font-weight: 400;
-                color: rgba(255, 255, 255, 0.9);
-                max-width: 640px;
-                margin: 0 auto 40px;
-                text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+                margin-bottom: 40px;
             }
             .hero-actions {
-                display: flex;
                 gap: 14px;
-                justify-content: center;
-                flex-wrap: wrap;
             }
 
-            /* Sections */
             section {
                 padding: 96px 0;
             }
-            .section-label {
-                font-size: 12px;
-                font-weight: 700;
-                color: #0066cc;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                margin-bottom: 14px;
-            }
             h2 {
-                font-size: clamp(28px, 4vw, 48px);
                 font-weight: 800;
                 letter-spacing: -1px;
-                line-height: 1.1;
                 margin-bottom: 20px;
             }
-            .lead {
-                font-size: clamp(15px, 1.4vw, 18px);
-                color: #4b4b4f;
-                line-height: 1.6;
-            }
 
-            /* Cards */
             .card {
-                background: #fff;
-                border: 1px solid #eaeaea;
                 border-radius: 24px;
                 padding: 32px;
-                transition:
-                    transform 0.3s ease,
-                    box-shadow 0.3s ease;
-            }
-            .card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.12);
             }
             .card-icon {
                 width: 52px;
                 height: 52px;
                 border-radius: 16px;
-                display: grid;
-                place-items: center;
                 margin-bottom: 20px;
             }
 
-            /* Stats */
             .stat-bar {
-                background: #1d1d1f;
-                color: #fff;
                 padding: 64px 0;
             }
             .stat-num {
-                font-size: clamp(36px, 5vw, 64px);
                 font-weight: 800;
                 letter-spacing: -2px;
-                background: linear-gradient(180deg, #fff, #a1a1a6);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                line-height: 1;
             }
             .stat-label {
                 font-size: 12px;
-                font-weight: 500;
-                color: #8e8e93;
-                text-transform: uppercase;
                 letter-spacing: 1.5px;
-                margin-top: 12px;
             }
 
-            /* CTA Banner */
             .cta-banner {
                 padding: 96px 0;
-                background: linear-gradient(135deg, #0066cc 0%, #0055b3 100%);
-                color: #fff;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-            }
-            .cta-banner::before {
-                content: "";
-                position: absolute;
-                top: -50%;
-                right: -10%;
-                width: 600px;
-                height: 600px;
-                background: radial-gradient(
-                    circle,
-                    rgba(255, 255, 255, 0.15) 0%,
-                    transparent 70%
-                );
-                border-radius: 50%;
-                pointer-events: none;
-            }
-            .cta-banner h2 {
-                color: #fff;
-                position: relative;
-            }
-            .cta-banner p {
-                color: rgba(255, 255, 255, 0.9);
-                position: relative;
-                max-width: 640px;
-                margin: 0 auto 40px;
-            }
-            .cta-banner .btn-primary {
-                background: #fff;
-                color: #0066cc;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-            .cta-banner .btn-primary:hover {
-                background: #f5f5f7;
-                box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
             }
 
-            /* Footer */
             footer {
-                background: #fff;
-                border-top: 1px solid #eaeaea;
                 padding: 64px 0 32px;
             }
             .foot-grid {
-                display: grid;
                 grid-template-columns: 2fr 1fr 1fr;
                 gap: 48px;
                 margin-bottom: 48px;
             }
-            .social {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background: #f5f5f7;
-                display: grid;
-                place-items: center;
-                color: #6c6c70;
-                transition: all 0.2s;
-            }
-            .social:hover {
-                background: #0066cc;
-                color: #fff;
-            }
             .foot-bottom {
-                border-top: 1px solid #eaeaea;
-                padding-top: 24px;
-                display: flex;
+                flex-direction: row;
                 justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 12px;
-                font-size: 13px;
-                color: #8e8e93;
+                text-align: left;
             }
+            .foot-bottom .row {
+                justify-content: flex-start;
+            }
+        }
 
-            /* Reveal animation */
+        /* =========================================================
+   LARGE DESKTOP (≥ 1024px)
+========================================================= */
+        @media (min-width: 1024px) {
+            .hero h1 {
+                font-size: clamp(48px, 7vw, 88px);
+            }
+        }
+
+        /* =========================================================
+   REDUCED MOTION
+========================================================= */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
             .reveal {
-                opacity: 0;
-                transform: translateY(24px);
-                transition:
-                    opacity 0.7s ease,
-                    transform 0.7s ease;
-            }
-            .reveal.in {
                 opacity: 1;
-                transform: translateY(0);
+                transform: none;
             }
-
-            /* Responsive */
-            @media (max-width: 900px) {
-                section {
-                    padding: 64px 0;
-                }
-                .cta-banner {
-                    padding: 64px 0;
-                }
-                .cols-2,
-                .cols-3,
-                .cols-4 {
-                    grid-template-columns: 1fr;
-                }
-                .foot-grid {
-                    grid-template-columns: 1fr;
-                    gap: 32px;
-                }
-                .hide-md {
-                    display: none;
-                }
-                .hero {
-                    min-height: 85vh;
-                    padding: 100px 20px 40px;
-                }
-                .nav {
-                    height: 56px;
-                }
-                .wrap {
-                    padding: 0 20px;
-                }
-                .card {
-                    padding: 24px;
-                }
-            }
-            @media (max-width: 520px) {
-                section {
-                    padding: 48px 0;
-                }
-                .cta-banner {
-                    padding: 48px 0;
-                }
-                .hero h1 {
-                    letter-spacing: -1.2px;
-                }
-            }
-            @media (prefers-reduced-motion: reduce) {
-                *,
-                *::before,
-                *::after {
-                    animation-duration: 0.01ms !important;
-                    transition-duration: 0.01ms !important;
-                }
-                .reveal {
-                    opacity: 1;
-                    transform: none;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <!-- ============ NAV ============ -->
-        <nav class="nav">
-            <div class="wrap row between" style="width: 100%">
-                <a href="/" class="row" style="gap: 10px">
-                    <div class="logo-mark">
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <path
-                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                            />
-                        </svg>
-                    </div>
-                    <span class="logo-text">Dalla Hub</span>
-                </a>
-
-                <div class="nav-links hide-md">
-                    <a href="#about">Our Story</a>
-                    <a href="#programs">Programs</a>
-                    <a href="#mission">Mission</a>
-                    <a href="#impact">Impact</a>
-                    <!-- Support Us → straight to /pay -->
-                    <a href="/pay" class="btn btn-dark">Support Us</a>
+        }
+    </style>
+</head>
+<body>
+    <!-- ============ NAV ============ -->
+    <nav class="nav">
+        <div class="wrap row between" style="width: 100%">
+            <a href="/" class="row" style="gap: 10px">
+                <div class="logo-mark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
                 </div>
-            </div>
-        </nav>
+                <span class="logo-text">Dalla Hub</span>
+            </a>
 
-        <!-- ============ HERO ============ -->
-        <section class="hero">
-            <div class="hero-bg" aria-hidden="true"></div>
-            <div class="hero-content">
-                <h1>Healthcare is<br />a human right.</h1>
-                <p>
-                    Dalla Community Hub bridges the gap to medical access for
-                    the most vulnerable populations in Kenya.
+            <div class="nav-links">
+                <a href="#about">Our Story</a>
+                <a href="#programs">Programs</a>
+                <a href="#mission">Mission</a>
+                <a href="#impact">Impact</a>
+                <a href="/pay" class="btn btn-dark">Support Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-content">
+            <h1>Healthcare is<br />a human right.</h1>
+            <p>
+                Dalla Community Hub bridges the gap to medical access for the
+                most vulnerable populations in Kenya.
+            </p>
+            <div class="hero-actions">
+                <a href="/pay" class="btn btn-primary btn-lg">Make a Donation</a>
+                <a href="#about" class="btn btn-ghost btn-lg">Discover Our Work</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about">
+        <div class="wrap grid cols-2" style="align-items: center; gap: 40px">
+            <div class="reveal">
+                <div class="section-label">Our Story</div>
+                <h2>Born from necessity.<br />Driven by compassion.</h2>
+                <p class="lead" style="margin-bottom: 16px">
+                    In many parts of Kenya, accessing basic healthcare is a
+                    luxury. Preventable diseases claim lives daily due to
+                    distance, cost, or lack of resources. Dalla Community Hub
+                    was established to intercept this cycle.
                 </p>
-                <div class="hero-actions">
-                    <!-- Make a Donation → straight to /pay -->
-                    <a href="/pay" class="btn btn-primary btn-lg"
-                        >Make a Donation</a
-                    >
-                    <a href="#about" class="btn btn-ghost btn-lg"
-                        >Discover Our Work</a
-                    >
+                <p class="lead" style="margin-bottom: 28px">
+                    We operate directly within informal settlements and remote
+                    villages, establishing mobile clinics and training local
+                    community health workers. By empowering communities from
+                    the inside out, we ensure that care is not just delivered,
+                    but sustained.
+                </p>
+                <div class="row" style="gap: 32px; padding-top: 20px; border-top: 1px solid #eaeaea; flex-wrap: wrap">
+                    <div>
+                        <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.8px">2018</div>
+                        <div style="font-size: 12px; color: #8e8e93; margin-top: 4px">Year established</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.8px">4+</div>
+                        <div style="font-size: 12px; color: #8e8e93; margin-top: 4px">Counties reached</div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <!-- ============ ABOUT ============ -->
-        <section id="about">
-            <div
-                class="wrap grid cols-2"
-                style="align-items: center; gap: 60px"
-            >
+            <div class="reveal grid cols-2" style="gap: 14px">
+                <img
+                    src="images/children.png"
+                    alt="Community members"
+                    loading="lazy"
+                    decoding="async"
+                    style="border-radius: 20px; height: 220px; object-fit: cover; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15);"
+                />
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5Qqg3wpR2VKGX-mobgcycKiLI5T-ZvytRgCz6UHBF1w&s=10"
+                    alt="Smiling children"
+                    loading="lazy"
+                    decoding="async"
+                    style="border-radius: 20px; height: 220px; object-fit: cover; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15); transform: translateY(20px);"
+                />
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ MISSION ============ -->
+    <section id="mission" style="background: #000; color: #fff">
+        <div class="wrap">
+            <div class="grid cols-3">
                 <div class="reveal">
-                    <div class="section-label">Our Story</div>
-                    <h2>Born from necessity.<br />Driven by compassion.</h2>
-                    <p class="lead" style="margin-bottom: 20px">
-                        In many parts of Kenya, accessing basic healthcare is a
-                        luxury. Preventable diseases claim lives daily due to
-                        distance, cost, or lack of resources. Dalla Community
-                        Hub was established to intercept this cycle.
-                    </p>
-                    <p class="lead" style="margin-bottom: 32px">
-                        We operate directly within informal settlements and
-                        remote villages, establishing mobile clinics and
-                        training local community health workers. By empowering
-                        communities from the inside out, we ensure that care is
-                        not just delivered, but sustained.
-                    </p>
-                    <div
-                        class="row"
-                        style="
-                            gap: 40px;
-                            padding-top: 24px;
-                            border-top: 1px solid #eaeaea;
-                        "
-                    >
-                        <div>
-                            <div
-                                style="
-                                    font-size: 32px;
-                                    font-weight: 800;
-                                    letter-spacing: -1px;
-                                "
-                            >
-                                2018
-                            </div>
-                            <div
-                                style="
-                                    font-size: 13px;
-                                    color: #8e8e93;
-                                    margin-top: 4px;
-                                "
-                            >
-                                Year established
-                            </div>
-                        </div>
-                        <div>
-                            <div
-                                style="
-                                    font-size: 32px;
-                                    font-weight: 800;
-                                    letter-spacing: -1px;
-                                "
-                            >
-                                4+
-                            </div>
-                            <div
-                                style="
-                                    font-size: 13px;
-                                    color: #8e8e93;
-                                    margin-top: 4px;
-                                "
-                            >
-                                Counties reached
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reveal grid cols-2" style="gap: 16px">
-                    <img
-                        src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=70"
-                        alt="Community members"
-                        loading="lazy"
-                        decoding="async"
-                        style="
-                            border-radius: 24px;
-                            height: 280px;
-                            object-fit: cover;
-                            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15);
-                            transform: translateY(24px);
-                        "
-                    />
-                    <img
-                        src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=600&q=70"
-                        alt="Smiling children"
-                        loading="lazy"
-                        decoding="async"
-                        style="
-                            border-radius: 24px;
-                            height: 280px;
-                            object-fit: cover;
-                            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15);
-                        "
-                    />
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ MISSION ============ -->
-        <section id="mission" style="background: #000; color: #fff">
-            <div class="wrap">
-                <div class="grid cols-3">
-                    <div class="reveal">
-                        <h3
-                            style="
-                                font-size: 32px;
-                                font-weight: 800;
-                                letter-spacing: -1px;
-                                margin-bottom: 16px;
-                            "
-                        >
-                            The Reality.
-                        </h3>
-                        <p style="color: #a1a1a6; line-height: 1.6">
-                            Millions in rural and peri-urban Kenya lack access
-                            to basic clinical facilities. Treatable conditions
-                            escalate to emergencies.
-                        </p>
-                    </div>
-                    <div class="reveal">
-                        <h3
-                            style="
-                                font-size: 32px;
-                                font-weight: 800;
-                                letter-spacing: -1px;
-                                margin-bottom: 16px;
-                                background: linear-gradient(
-                                    135deg,
-                                    #4da3ff,
-                                    #a566ff
-                                );
-                                -webkit-background-clip: text;
-                                background-clip: text;
-                                -webkit-text-fill-color: transparent;
-                            "
-                        >
-                            Our Intervention.
-                        </h3>
-                        <p style="color: #a1a1a6; line-height: 1.6">
-                            Fully-equipped mobile medical clinics deployed
-                            directly to vulnerable populations — removing
-                            distance as a barrier.
-                        </p>
-                    </div>
-                    <div class="reveal">
-                        <h3
-                            style="
-                                font-size: 32px;
-                                font-weight: 800;
-                                letter-spacing: -1px;
-                                margin-bottom: 16px;
-                                background: linear-gradient(
-                                    135deg,
-                                    #4ade80,
-                                    #10b981
-                                );
-                                -webkit-background-clip: text;
-                                background-clip: text;
-                                -webkit-text-fill-color: transparent;
-                            "
-                        >
-                            Long-Term Impact.
-                        </h3>
-                        <p style="color: #a1a1a6; line-height: 1.6">
-                            Training Community Health Volunteers for continuous
-                            education — creating sustainable, self-reliant
-                            communities.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ PROGRAMS ============ -->
-        <section id="programs" style="background: #fff">
-            <div class="wrap">
-                <div
-                    style="
-                        text-align: center;
-                        max-width: 640px;
-                        margin: 0 auto 60px;
-                    "
-                    class="reveal"
-                >
-                    <h2>Core Initiatives.</h2>
-                    <p class="lead">
-                        Comprehensive solutions tailored to the specific needs
-                        of the communities we serve.
+                    <h3 style="font-size: 26px; font-weight: 700; letter-spacing: -0.6px; margin-bottom: 12px">The Reality.</h3>
+                    <p style="color: #a1a1a6; line-height: 1.65; font-size: 14px">
+                        Millions in rural and peri-urban Kenya lack access to basic clinical facilities. Treatable conditions escalate to emergencies.
                     </p>
                 </div>
-
-                <div class="grid cols-3">
-                    <div class="card reveal">
-                        <div
-                            class="card-icon"
-                            style="background: #e0f0ff; color: #0066cc"
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <path
-                                    d="M10 2v6.5l-5.5 8a2 2 0 0 0 1.7 3.1h11.6a2 2 0 0 0 1.7-3.1L14 8.5V2"
-                                />
-                                <path d="M8 2h8" />
-                            </svg>
-                        </div>
-                        <h3
-                            style="
-                                font-size: 20px;
-                                font-weight: 700;
-                                margin-bottom: 10px;
-                            "
-                        >
-                            Mobile Outreach
-                        </h3>
-                        <p
-                            style="
-                                color: #6c6c70;
-                                line-height: 1.6;
-                                font-size: 14px;
-                            "
-                        >
-                            Fully staffed mobile clinics traveling to remote
-                            areas — general consultations, medicines, emergency
-                            referrals.
-                        </p>
-                    </div>
-
-                    <div class="card reveal">
-                        <div
-                            class="card-icon"
-                            style="background: #ffe4ec; color: #e91e63"
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="M12 8v8M8 12h8" />
-                            </svg>
-                        </div>
-                        <h3
-                            style="
-                                font-size: 20px;
-                                font-weight: 700;
-                                margin-bottom: 10px;
-                            "
-                        >
-                            Maternal Health
-                        </h3>
-                        <p
-                            style="
-                                color: #6c6c70;
-                                line-height: 1.6;
-                                font-size: 14px;
-                            "
-                        >
-                            Pre and post-natal care focused on reducing maternal
-                            mortality. Nutritional supplements and safe delivery
-                            kits.
-                        </p>
-                    </div>
-
-                    <div class="card reveal">
-                        <div
-                            class="card-icon"
-                            style="background: #e6f9f0; color: #10b981"
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <path
-                                    d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                                />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
-                        </div>
-                        <h3
-                            style="
-                                font-size: 20px;
-                                font-weight: 700;
-                                margin-bottom: 10px;
-                            "
-                        >
-                            Community Education
-                        </h3>
-                        <p
-                            style="
-                                color: #6c6c70;
-                                line-height: 1.6;
-                                font-size: 14px;
-                            "
-                        >
-                            Training local volunteers in hygiene, sanitation,
-                            and disease prevention for long-term resilience.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ IMPACT STATS ============ -->
-        <section id="impact" class="stat-bar">
-            <div class="wrap">
-                <div class="grid cols-4" style="text-align: center">
-                    <div>
-                        <div class="stat-num">25+</div>
-                        <div class="stat-label">Communities served</div>
-                    </div>
-                    <div>
-                        <div class="stat-num">18,400</div>
-                        <div class="stat-label">Patients treated</div>
-                    </div>
-                    <div>
-                        <div class="stat-num">120</div>
-                        <div class="stat-label">Trained volunteers</div>
-                    </div>
-                    <div>
-                        <div class="stat-num">100%</div>
-                        <div class="stat-label">Not-for-profit</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ CTA — INVEST IN HEALTH ============ -->
-        <section class="cta-banner">
-            <div class="wrap">
-                <div
-                    class="reveal"
-                    style="position: relative; max-width: 720px; margin: 0 auto"
-                >
-                    <h2>Invest in health.</h2>
-                    <p
-                        style="
-                            font-size: clamp(15px, 1.4vw, 18px);
-                            line-height: 1.6;
-                        "
-                    >
-                        Your contribution directly funds medical supplies,
-                        mobile clinic logistics, and training programs. Every
-                        shilling goes further than you think.
+                <div class="reveal">
+                    <h3 style="font-size: 26px; font-weight: 700; letter-spacing: -0.6px; margin-bottom: 12px; background: linear-gradient(135deg, #4da3ff, #a566ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent">
+                        Our Intervention.
+                    </h3>
+                    <p style="color: #a1a1a6; line-height: 1.65; font-size: 14px">
+                        Fully-equipped mobile medical clinics deployed directly to vulnerable populations — removing distance as a barrier.
                     </p>
-                    <a
-                        href="/pay"
-                        class="btn btn-primary btn-lg"
-                        style="margin-top: 8px"
-                    >
-                        Donate Now
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <path d="M5 12h14" />
-                            <path d="M12 5l7 7-7 7" />
+                </div>
+                <div class="reveal">
+                    <h3 style="font-size: 26px; font-weight: 700; letter-spacing: -0.6px; margin-bottom: 12px; background: linear-gradient(135deg, #4ade80, #10b981); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent">
+                        Long-Term Impact.
+                    </h3>
+                    <p style="color: #a1a1a6; line-height: 1.65; font-size: 14px">
+                        Training Community Health Volunteers for continuous education — creating sustainable, self-reliant communities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ PROGRAMS ============ -->
+    <section id="programs" style="background: #fff">
+        <div class="wrap">
+            <div style="text-align: center; max-width: 640px; margin: 0 auto 40px" class="reveal">
+                <h2>Core Initiatives.</h2>
+                <p class="lead">
+                    Comprehensive solutions tailored to the specific needs of the communities we serve.
+                </p>
+            </div>
+
+            <div class="grid cols-3">
+                <div class="card reveal">
+                    <div class="card-icon" style="background: #e0f0ff; color: #0066cc">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 2v6.5l-5.5 8a2 2 0 0 0 1.7 3.1h11.6a2 2 0 0 0 1.7-3.1L14 8.5V2" />
+                            <path d="M8 2h8" />
                         </svg>
-                    </a>
-                    <div
-                        style="
-                            display: flex;
-                            gap: 32px;
-                            justify-content: center;
-                            margin-top: 40px;
-                            flex-wrap: wrap;
-                            position: relative;
-                        "
-                    >
-                        <div>
-                            <div
-                                style="
-                                    font-size: 24px;
-                                    font-weight: 800;
-                                    letter-spacing: -0.5px;
-                                "
-                            >
-                                $10
-                            </div>
-                            <div
-                                style="
-                                    font-size: 12px;
-                                    opacity: 0.85;
-                                    margin-top: 4px;
-                                "
-                            >
-                                Antibiotics for two children
-                            </div>
-                        </div>
-                        <div>
-                            <div
-                                style="
-                                    font-size: 24px;
-                                    font-weight: 800;
-                                    letter-spacing: -0.5px;
-                                "
-                            >
-                                $50
-                            </div>
-                            <div
-                                style="
-                                    font-size: 12px;
-                                    opacity: 0.85;
-                                    margin-top: 4px;
-                                "
-                            >
-                                Maternal kits for five mothers
-                            </div>
-                        </div>
-                        <div>
-                            <div
-                                style="
-                                    font-size: 24px;
-                                    font-weight: 800;
-                                    letter-spacing: -0.5px;
-                                "
-                            >
-                                100%
-                            </div>
-                            <div
-                                style="
-                                    font-size: 12px;
-                                    opacity: 0.85;
-                                    margin-top: 4px;
-                                "
-                            >
-                                To programs, never admin
-                            </div>
-                        </div>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px">Mobile Outreach</h3>
+                    <p style="color: #6c6c70; line-height: 1.6; font-size: 14px">
+                        Fully staffed mobile clinics traveling to remote areas — general consultations, medicines, emergency referrals.
+                    </p>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-icon" style="background: #ffe4ec; color: #e91e63">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 8v8M8 12h8" />
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px">Maternal Health</h3>
+                    <p style="color: #6c6c70; line-height: 1.6; font-size: 14px">
+                        Pre and post-natal care focused on reducing maternal mortality. Nutritional supplements and safe delivery kits.
+                    </p>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-icon" style="background: #e6f9f0; color: #10b981">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px">Community Education</h3>
+                    <p style="color: #6c6c70; line-height: 1.6; font-size: 14px">
+                        Training local volunteers in hygiene, sanitation, and disease prevention for long-term resilience.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ IMPACT STATS ============ -->
+    <section id="impact" class="stat-bar">
+        <div class="wrap">
+            <div class="grid cols-4" style="text-align: center">
+                <div>
+                    <div class="stat-num">25+</div>
+                    <div class="stat-label">Communities served</div>
+                </div>
+                <div>
+                    <div class="stat-num">18,400</div>
+                    <div class="stat-label">Patients treated</div>
+                </div>
+                <div>
+                    <div class="stat-num">120</div>
+                    <div class="stat-label">Trained volunteers</div>
+                </div>
+                <div>
+                    <div class="stat-num">100%</div>
+                    <div class="stat-label">Not-for-profit</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CTA — INVEST IN HEALTH ============ -->
+    <section class="cta-banner">
+        <div class="wrap">
+            <div class="reveal" style="position: relative; max-width: 720px; margin: 0 auto">
+                <h2>Invest in health.</h2>
+                <p style="font-size: clamp(14px, 3.5vw, 18px); line-height: 1.6">
+                    Your contribution directly funds medical supplies, mobile clinic logistics, and training programs. Every shilling goes further than you think.
+                </p>
+                <a href="/pay" class="btn btn-primary btn-lg" style="margin-top: 8px">
+                    Donate Now
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14" />
+                        <path d="M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <div style="display: flex; gap: 24px; justify-content: center; margin-top: 32px; flex-wrap: wrap; position: relative">
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.4px">$10</div>
+                        <div style="font-size: 12px; opacity: 0.85; margin-top: 4px">Antibiotics for two children</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.4px">$50</div>
+                        <div style="font-size: 12px; opacity: 0.85; margin-top: 4px">Maternal kits for five mothers</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.4px">100%</div>
+                        <div style="font-size: 12px; opacity: 0.85; margin-top: 4px">To programs, never admin</div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ============ FOOTER ============ -->
-        <footer>
-            <div class="wrap">
-                <div class="foot-grid">
-                    <div>
-                        <div class="row" style="gap: 10px; margin-bottom: 20px">
-                            <div
-                                style="
-                                    width: 36px;
-                                    height: 36px;
-                                    border-radius: 10px;
-                                    background: #1d1d1f;
-                                    color: #fff;
-                                    display: grid;
-                                    place-items: center;
-                                "
-                            >
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2.4"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                >
-                                    <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                                    />
-                                </svg>
-                            </div>
-                            <span
-                                style="
-                                    font-weight: 700;
-                                    font-size: 17px;
-                                    letter-spacing: -0.2px;
-                                "
-                                >Dalla Community Hub</span
-                            >
+    <!-- ============ FOOTER ============ -->
+    <footer>
+        <div class="wrap">
+            <div class="foot-grid">
+                <div>
+                    <div class="row" style="gap: 10px; margin-bottom: 16px">
+                        <div style="width: 32px; height: 32px; border-radius: 9px; background: #1d1d1f; color: #fff; display: grid; place-items: center">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                            </svg>
                         </div>
-                        <p
-                            style="
-                                color: #6c6c70;
-                                font-size: 14px;
-                                line-height: 1.6;
-                                max-width: 340px;
-                                margin-bottom: 20px;
-                            "
-                        >
-                            A registered Community Based Organization (CBO)
-                            providing accessible healthcare and education in
-                            Kenya.
-                        </p>
-                        <div class="row" style="gap: 10px">
-                            <a href="#" class="social" aria-label="Twitter"
-                                ><svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        d="M18 2h3a1 1 0 0 1 1 1v3a1 1 0 0 1-.29.71l-9 9A7 7 0 0 1 3 14V9a1 1 0 0 1 1-1h3l4-4 7-2z"
-                                    /></svg
-                            ></a>
-                            <a href="#" class="social" aria-label="Instagram"
-                                ><svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <rect
-                                        x="3"
-                                        y="3"
-                                        width="18"
-                                        height="18"
-                                        rx="5"
-                                    />
-                                    <circle cx="12" cy="12" r="4" />
-                                    <circle
-                                        cx="17.5"
-                                        cy="6.5"
-                                        r="1"
-                                        fill="currentColor"
-                                    /></svg
-                            ></a>
-                            <a href="#" class="social" aria-label="Facebook"
-                                ><svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"
-                                    /></svg
-                            ></a>
-                        </div>
+                        <span style="font-weight: 700; font-size: 16px; letter-spacing: -0.2px">Dalla Community Hub</span>
                     </div>
-                    <div>
-                        <div
-                            style="
-                                font-size: 12px;
-                                font-weight: 700;
-                                text-transform: uppercase;
-                                letter-spacing: 1px;
-                                margin-bottom: 20px;
-                            "
-                        >
-                            Quick Links
-                        </div>
-                        <ul
-                            style="
-                                list-style: none;
-                                display: flex;
-                                flex-direction: column;
-                                gap: 12px;
-                            "
-                        >
-                            <li>
-                                <a
-                                    href="#about"
-                                    style="color: #6c6c70; font-size: 14px"
-                                    >Our Story</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="#programs"
-                                    style="color: #6c6c70; font-size: 14px"
-                                    >Programs</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="#impact"
-                                    style="color: #6c6c70; font-size: 14px"
-                                    >Impact</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="/pay"
-                                    style="color: #6c6c70; font-size: 14px"
-                                    >Donate</a
-                                >
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <div
-                            style="
-                                font-size: 12px;
-                                font-weight: 700;
-                                text-transform: uppercase;
-                                letter-spacing: 1px;
-                                margin-bottom: 20px;
-                            "
-                        >
-                            Contact
-                        </div>
-                        <ul
-                            style="
-                                list-style: none;
-                                display: flex;
-                                flex-direction: column;
-                                gap: 12px;
-                                color: #6c6c70;
-                                font-size: 14px;
-                            "
-                        >
-                            <li>Nairobi, Kenya</li>
-                            <li>info@dallahub.org</li>
-                            <li>+254 700 000 000</li>
-                        </ul>
+                    <p style="color: #6c6c70; font-size: 14px; line-height: 1.6; max-width: 340px; margin-bottom: 16px">
+                        A registered Community Based Organization (CBO) providing accessible healthcare and education in Kenya.
+                    </p>
+                    <div class="row" style="gap: 10px">
+                        <a href="#" class="social" aria-label="Twitter">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18 2h3a1 1 0 0 1 1 1v3a1 1 0 0 1-.29.71l-9 9A7 7 0 0 1 3 14V9a1 1 0 0 1 1-1h3l4-4 7-2z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social" aria-label="Instagram">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="5" />
+                                <circle cx="12" cy="12" r="4" />
+                                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social" aria-label="Facebook">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
-                <div class="foot-bottom">
-                    <span
-                        >© 2026 Dalla Community Hub. All rights reserved.</span
-                    >
-                    <div class="row" style="gap: 24px">
-                        <a href="#" style="color: #8e8e93">Privacy</a>
-                        <a href="#" style="color: #8e8e93">Terms</a>
-                    </div>
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px">Quick Links</div>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px">
+                        <li><a href="#about" style="color: #6c6c70; font-size: 14px">Our Story</a></li>
+                        <li><a href="#programs" style="color: #6c6c70; font-size: 14px">Programs</a></li>
+                        <li><a href="#impact" style="color: #6c6c70; font-size: 14px">Impact</a></li>
+                        <li><a href="/pay" style="color: #6c6c70; font-size: 14px">Donate</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px">Contact</div>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; color: #6c6c70; font-size: 14px">
+                        <li>Nairobi, Kenya</li>
+                        <li>info@dallahub.org</li>
+                        <li>+254 700 000 000</li>
+                    </ul>
                 </div>
             </div>
-        </footer>
+            <div class="foot-bottom">
+                <span>© 2026 Dalla Community Hub. All rights reserved.</span>
+                <div class="row" style="gap: 24px">
+                    <a href="#" style="color: #8e8e93">Privacy</a>
+                    <a href="#" style="color: #8e8e93">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-        <script>
-            /* =========================================================
+    <script>
+        /* =========================================================
    REVEAL ON SCROLL — IntersectionObserver (fast, no deps)
 ========================================================= */
-            (function () {
-                var els = document.querySelectorAll(".reveal");
-                if (!("IntersectionObserver" in window)) {
-                    els.forEach(function (el) {
-                        el.classList.add("in");
-                    });
-                    return;
-                }
-                var io = new IntersectionObserver(
-                    function (entries) {
-                        entries.forEach(function (e) {
-                            if (e.isIntersecting) {
-                                e.target.classList.add("in");
-                                io.unobserve(e.target);
-                            }
-                        });
-                    },
-                    { rootMargin: "0px 0px -50px 0px", threshold: 0.05 },
-                );
+        (function () {
+            var els = document.querySelectorAll(".reveal");
+            if (!("IntersectionObserver" in window)) {
                 els.forEach(function (el) {
-                    io.observe(el);
+                    el.classList.add("in");
                 });
-            })();
-        </script>
-    </body>
+                return;
+            }
+            var io = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("in");
+                            io.unobserve(e.target);
+                        }
+                    });
+                },
+                { rootMargin: "0px 0px -50px 0px", threshold: 0.05 },
+            );
+            els.forEach(function (el) {
+                io.observe(el);
+            });
+        })();
+    </script>
+</body>
 </html>
