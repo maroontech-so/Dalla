@@ -1,10 +1,2 @@
 node_modules/
 .env
-payments.db
-payments.db-shm
-payments.db-wal
-npm-debug.log*
-dist/
-public/js/
-node_modules/
-.env
