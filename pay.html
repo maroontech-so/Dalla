@@ -55,16 +55,20 @@
             background: #fff;
         }
 
-        /* ---------- MOBILE FIRST (default) ---------- */
+        /* ============================================================
+           MOBILE FIRST (default)
+           ============================================================ */
+
+        /* On mobile: card visual area is a normal flow block (not absolute) */
         .checkout-right {
             order: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 24px 16px 8px;
-            min-height: auto;
             position: relative;
             width: 100%;
+            min-height: 220px; /* reserves space so layout doesn't collapse */
         }
 
         .checkout-left {
@@ -330,7 +334,7 @@
             transform: none;
         }
 
-        /* ---------- CARD STYLES (mobile first) ---------- */
+        /* ---------- CARD VIEW (mobile: static flow) ---------- */
         .card-view {
             display: flex;
             align-items: center;
@@ -340,12 +344,10 @@
             width: 100%;
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
+        /* When hidden, we don't use absolute positioning on mobile — 
+           we just collapse it so the mpesa view can take its place */
         .card-view.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.95);
-            position: absolute;
-            inset: 0;
+            display: none;
         }
 
         .card-stage {
@@ -717,24 +719,17 @@
             text-transform: uppercase;
         }
 
-        /* ---------- MPESA VIEW (mobile) ---------- */
+        /* ---------- MPESA VIEW (mobile: static flow, no absolute) ---------- */
         .mpesa-view {
-            position: absolute;
-            inset: 0;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px 16px;
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.95);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            width: 100%;
         }
         .mpesa-view.show {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
+            display: flex;
         }
 
         .mpesa-panel {
@@ -821,6 +816,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
+            border-radius: 16px;
         }
         .stk-push.show {
             opacity: 1;
@@ -1112,7 +1108,10 @@
             top: -20px;
         }
 
-        /* ---------- TABLET & DESKTOP (≥ 900px) ---------- */
+        /* ============================================================
+           TABLET & DESKTOP (≥ 900px)
+           Card on RIGHT, Form on LEFT
+           ============================================================ */
         @media (min-width: 900px) {
             body {
                 align-items: center;
@@ -1131,6 +1130,7 @@
                 min-height: 100vh;
             }
 
+            /* FORM on the LEFT */
             .checkout-left {
                 order: 0;
                 padding: 48px 56px;
@@ -1212,12 +1212,51 @@
                 border-radius: 9px;
             }
 
+            /* VISUAL on the RIGHT */
             .checkout-right {
                 order: 0;
                 padding: 40px;
                 min-height: 100vh;
                 perspective: 1400px;
                 align-items: center;
+                position: relative;
+            }
+
+            /* On desktop, restore absolute positioning for mpesa view
+               so it sits over the card area, not the form */
+            .mpesa-view {
+                position: absolute;
+                inset: 0;
+                padding: 40px 30px;
+                display: flex;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.95);
+                transition: opacity 0.4s ease, transform 0.4s ease;
+                background: #fff;
+            }
+            .mpesa-view.show {
+                opacity: 1;
+                pointer-events: auto;
+                transform: scale(1);
+            }
+
+            /* Card view also absolute on desktop for cross-fade */
+            .card-view {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 40px;
+                opacity: 1;
+                transition: opacity 0.4s ease, transform 0.4s ease;
+            }
+            .card-view.hidden {
+                display: flex;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.95);
             }
 
             .card-stage,
@@ -1276,11 +1315,6 @@
             .badge-text { font-size: 11px; letter-spacing: 2.5px; }
             .badge-sub { font-size: 8px; }
 
-            .mpesa-view {
-                position: absolute;
-                inset: 0;
-                padding: 40px 30px;
-            }
             .mpesa-panel {
                 padding: 34px 30px 30px;
                 max-width: 340px;
@@ -1387,7 +1421,7 @@
 <body>
     <div class="checkout-window" id="checkoutWindow">
         <div class="checkout-content">
-            <!-- RIGHT: CARD VISUAL + MPESA VISUAL (top on mobile) -->
+            <!-- RIGHT: CARD VISUAL + MPESA VISUAL -->
             <div class="checkout-right">
                 <div class="card-view" id="cardView">
                     <div class="card-stage">
@@ -1473,7 +1507,7 @@
                 </div>
             </div>
 
-            <!-- LEFT: FORM (bottom on mobile) -->
+            <!-- LEFT: FORM -->
             <div class="checkout-left">
                 <a href="/" class="back-link">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -1672,7 +1706,7 @@
 
         // ---------- State ----------
         let currentMethod = "card";
-        let currentAmount = 50; // default $50 on mobile
+        let currentAmount = 50;
         let busy = false;
         let activeReference = null;
         let timers = [];
@@ -2115,13 +2149,11 @@
             const phone = params.get("phone");
             const reference = params.get("reference");
 
-            // Default to $50 on mobile (already set), but allow URL override
             if (Number.isFinite(usd) && usd > 0) {
                 currentAmount = usd;
                 document.querySelectorAll(".amount-btn").forEach((b) => b.classList.remove("active"));
                 customAmount.value = String(usd);
             } else {
-                // Ensure default active button matches currentAmount ($50)
                 document.querySelectorAll(".amount-btn").forEach((b) => {
                     const val = parseInt(b.dataset.amount, 10) / 100;
                     b.classList.toggle("active", Math.abs(val - currentAmount) < 0.001);
