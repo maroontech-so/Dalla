@@ -189,10 +189,9 @@ db.exec(`
    EXPRESS — PERFORMANCE FIRST
 ========================================================= */
 
-// 1. Compression for all responses
 app.use(compression({ threshold: 512 }));
 
-// 2. JSON body parser (small limit; we never receive big payloads)
+// JSON parser — keep rawBody for webhook signature verification
 app.use(
   express.json({
     limit: "100kb",
@@ -203,8 +202,6 @@ app.use(
 );
 app.use(express.urlencoded({ extended: false, limit: "100kb" }));
 
-// 3. Static files with aggressive caching.
-//    HTML is served explicitly below with no-cache.
 const staticOptions = {
   maxAge: "1y",
   etag: true,
@@ -219,7 +216,6 @@ const staticOptions = {
 };
 app.use(express.static(__dirname, staticOptions));
 
-// 4. Small helper to send an HTML file with no-cache
 function sendHtml(res, filename) {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -303,6 +299,10 @@ function isValidExpiry(month, year) {
   if (y < cy) return false;
   if (y === cy && m < cm) return false;
   return y <= cy + 30;
+}
+
+function buildCallbackUrl() {
+  return `${APP_URL.replace(/\/$/, "")}/payment/callback`;
 }
 
 /* =========================================================
@@ -458,7 +458,9 @@ const creditSuccessfulPayment = db.transaction((d) => {
     `UPDATE wallets SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE customer_id = ?`,
   ).run(amount, customerId);
 
-  const isMpesa = channel === "mobile_money";
+  const isMpesa =
+    channel === "mobile_money" ||
+    String(metadata || "").toLowerCase().includes("mpesa");
   const tr = db
     .prepare(
       `
@@ -504,6 +506,8 @@ const creditSuccessfulPayment = db.transaction((d) => {
 
 /* =========================================================
    M-PESA INITIALIZE
+   (uses /charge with mobile_money channel — works in live mode;
+    in test mode Paystack accepts the same payload)
 ========================================================= */
 
 app.post("/api/payments/paystack/initialize", async (req, res) => {
@@ -536,7 +540,7 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
     const amountSubunit = moneyToSubunit(amountKes);
     const customer = getOrCreateCustomer(email, name, phone);
     const reference = generateReference();
-    const callbackUrl = `${APP_URL.replace(/\/$/, "")}/payment/callback`;
+    const callbackUrl = buildCallbackUrl();
 
     const payload = {
       email,
@@ -646,13 +650,20 @@ app.post("/api/payments/paystack/charge", async (req, res) => {
     const amountSubunit = moneyToSubunit(amountKes);
     const customer = getOrCreateCustomer(email, name, "");
     const reference = generateReference();
+    const callbackUrl = buildCallbackUrl();
 
     const payload = {
       email,
       amount: String(amountSubunit),
       currency: CURRENCY,
       reference,
-      card: { number: cardNumber, cvv, expiry_month: month, expiry_year: year },
+      callback_url: callbackUrl,
+      card: {
+        number: cardNumber,
+        cvv,
+        expiry_month: month,
+        expiry_year: year,
+      },
       metadata: {
         customer_id: customer.id,
         email,
@@ -703,7 +714,9 @@ app.post("/api/payments/paystack/charge", async (req, res) => {
         currency: data.currency,
         paymentAttemptId,
         paymentMethod:
-          data.authorization?.card_type || data.authorization?.brand || "card",
+          data.authorization?.card_type ||
+          data.authorization?.brand ||
+          "card",
         channel: data.channel || "card",
         gatewayResponse: data.gateway_response,
         metadata: JSON.stringify(data.metadata || {}),
@@ -958,7 +971,9 @@ app.post("/webhooks/paystack", async (req, res) => {
             currency: p.currency,
             paymentAttemptId: attempt.id,
             paymentMethod:
-              p.authorization?.card_type || p.authorization?.brand || "card",
+              p.authorization?.card_type ||
+              p.authorization?.brand ||
+              "card",
             channel: p.channel,
             gatewayResponse: p.gateway_response,
             metadata: JSON.stringify(p.metadata || {}),
@@ -1124,7 +1139,7 @@ app.get("/api/transactions", (req, res) => {
 });
 
 /* =========================================================
-   CLEAN ROUTES — no .html extension
+   CLEAN ROUTES
 ========================================================= */
 
 app.get("/payment/callback", (req, res) => {
@@ -1136,7 +1151,6 @@ app.get("/", (req, res) => sendHtml(res, "index.html"));
 app.get("/pay", (req, res) => sendHtml(res, "pay.html"));
 app.get("/admin", (req, res) => sendHtml(res, "admin.html"));
 
-// Legacy .html requests → redirect to clean URL
 app.get("/index.html", (req, res) => res.redirect(301, "/"));
 app.get("/pay.html", (req, res) => res.redirect(301, "/pay"));
 app.get("/admin.html", (req, res) => res.redirect(301, "/admin"));
