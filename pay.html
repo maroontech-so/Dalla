@@ -224,15 +224,14 @@
             .method-toggle button.active {
                 color: #111;
             }
-            .method-toggle .logo-img {
+            .method-toggle .logo-svg {
                 width: 42px;
                 height: 16px;
-                object-fit: contain;
                 display: block;
             }
-            .method-toggle .logo-img.mpesa-img {
-                width: 46px;
-                height: 16px;
+            .method-toggle .logo-svg.mpesa-svg {
+                width: 56px;
+                height: 18px;
             }
 
             .form-row {
@@ -731,7 +730,6 @@
                 height: 20px;
                 width: auto;
                 display: block;
-                filter: brightness(0) invert(1);
                 opacity: 0.95;
                 position: relative;
                 z-index: 1;
@@ -1472,13 +1470,13 @@
                 .method-toggle button {
                     font-size: 11px;
                 }
-                .method-toggle .logo-img {
+                .method-toggle .logo-svg {
                     width: 34px;
                     height: 13px;
                 }
-                .method-toggle .logo-img.mpesa-img {
-                    width: 38px;
-                    height: 13px;
+                .method-toggle .logo-svg.mpesa-svg {
+                    width: 46px;
+                    height: 15px;
                 }
                 .pay-button {
                     height: 46px;
@@ -1613,10 +1611,10 @@
                     <p class="sub" id="formSub">Every shilling helps save a life. Thank you 💚</p>
 
                     <div class="amount-row" id="amountRow">
-                        <button class="amount-btn" data-amount="500">$5</button>
-                        <button class="amount-btn" data-amount="1000">$10</button>
-                        <button class="amount-btn active" data-amount="2500">$25</button>
-                        <button class="amount-btn" data-amount="5000">$50</button>
+                        <button class="amount-btn" data-amount="500" type="button">$5</button>
+                        <button class="amount-btn" data-amount="1000" type="button">$10</button>
+                        <button class="amount-btn active" data-amount="2500" type="button">$25</button>
+                        <button class="amount-btn" data-amount="5000" type="button">$50</button>
                     </div>
 
                     <div class="custom-amount-wrap">
@@ -1626,11 +1624,16 @@
 
                     <div class="method-toggle" id="methodToggle">
                         <div class="slider"></div>
-                        <button class="active" data-method="card" type="button">
-                            <img class="logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" />
+                        <button class="active" data-method="card" type="button" aria-label="Card">
+                            <svg class="logo-svg" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path fill="#1A1F71" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
+                                <path fill="#F7B600" d="M117.2 153H32.4l-.6 3.8c66.1 16 109.9 54.7 128.3 101.1L142.4 166c-2.7-10.8-10.8-12.8-25.2-13z"/>
+                            </svg>
                         </button>
-                        <button data-method="mpesa" type="button">
-                            <img class="logo-img mpesa-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/3840px-M-PESA_LOGO-01.svg.png" alt="M-Pesa" />
+                        <button data-method="mpesa" type="button" aria-label="M-Pesa">
+                            <svg class="logo-svg mpesa-svg" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
+                            </svg>
                         </button>
                     </div>
 
@@ -1708,7 +1711,9 @@
                                             <strong id="cardExpiry">••/••</strong>
                                         </div>
                                         <div class="card-visa-wrap">
-                                            <img class="card-visa-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" />
+                                            <svg class="card-visa-logo" viewBox="0 0 780 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path fill="#ffffff" d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM551.9 157.6c-10.6-4-27.2-8.3-47.8-8.3-52.7 0-89.8 26.6-90.1 64.6-.3 28.1 26.5 43.8 46.7 53.1 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-31.9 19.1-21.3 0-32.6-3-50.1-10.3l-6.9-3.1-7.5 43.8c12.5 5.4 35.5 10.1 59.4 10.1 56 0 92.3-26.3 92.7-67 .2-22.3-14-39.3-44.8-53.3-18.7-9.1-30.1-15.2-30-24.4 0-8.2 9.7-16.9 30.6-16.9 17.5-.3 30.1 3.5 40 7.5l4.8 2.3 7.1-42.8zM694.6 153l-41.2 195.7h-49.6L642 153h52.6zM740 153h-42.7c-9.7 0-17 5.3-21.2 13.2l-60.1 182.5h56.1l11.2-31h68.6l6.5 31h49.5L740 153zm-59.5 126.9l20.3-56.6 11.5 56.6h-31.8zM248.4 153l-52.4 133.5-5.6-29.2c-9.6-31.3-39.6-65.2-73.2-82.2l47.9 173.6h56.6l84.2-195.7h-57.5z"/>
+                                            </svg>
                                         </div>
                                     </div>
                                     <div class="processing-badge">
@@ -1737,7 +1742,9 @@
 
                     <div class="mpesa-view" id="mpesaView">
                         <div class="mpesa-panel">
-                            <img class="mpesa-panel-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/3840px-M-PESA_LOGO-01.svg.png" alt="M-Pesa" />
+                            <svg class="mpesa-panel-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <text x="10" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="38" fill="#43B02A" letter-spacing="-1">M-PESA</text>
+                            </svg>
                             <div class="instr">Enter the phone number that will receive the M-PESA STK Push to complete payment.</div>
                             <div class="mpesa-preview">
                                 <div class="mpesa-preview-row">
@@ -1779,7 +1786,7 @@
                 <div class="amount-line" id="resultAmount">$25.00 donated</div>
                 <p id="resultMsg">Your donation has been received.</p>
                 <div class="quote" id="resultQuote"></div>
-                <button class="retry-btn" id="retryBtn" style="display:none;">Try again</button>
+                <button class="retry-btn" id="retryBtn" style="display:none;" type="button">Try again</button>
             </div>
             <div class="confetti-container" id="confettiContainer"></div>
         </div>
