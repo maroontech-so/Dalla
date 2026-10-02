@@ -252,6 +252,43 @@ function normalizeKenyanPhone(raw) {
 }
 const isValidKenyanPhone = (p) => /^254(7|1)\d{8}$/.test(p);
 
+const normalizeCardNumber = (raw) => String(raw || "").replace(/\D/g, "");
+function isValidCardNumber(num) {
+  if (!/^\d{13,19}$/.test(num)) return false;
+  let sum = 0,
+    alt = false;
+  for (let i = num.length - 1; i >= 0; i--) {
+    let n = parseInt(num[i], 10);
+    if (alt) {
+      n *= 2;
+      if (n > 9) n -= 9;
+    }
+    sum += n;
+    alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+function normalizeExpiry(raw) {
+  const d = String(raw || "").replace(/\D/g, "");
+  if (d.length < 4) return { month: "", year: "" };
+  const month = d.slice(0, 2);
+  let year = d.slice(2, 4);
+  if (year.length === 2) year = "20" + year;
+  return { month, year };
+}
+function isValidExpiry(month, year) {
+  if (!/^\d{2}$/.test(month) || !/^\d{4}$/.test(year)) return false;
+  const m = Number(month),
+    y = Number(year);
+  if (m < 1 || m > 12) return false;
+  const now = new Date();
+  const cy = now.getFullYear(),
+    cm = now.getMonth() + 1;
+  if (y < cy) return false;
+  if (y === cy && m < cm) return false;
+  return y <= cy + 30;
+}
+
 function buildCallbackUrl() {
   return `${APP_URL.replace(/\/$/, "")}/payment/callback`;
 }
@@ -523,12 +560,7 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
       data.status || "pay_offline",
       data.authorization_url || null,
       data.access_code || null,
-      JSON.stringify({
-        customer_id: customer.id,
-        name,
-        phone,
-        method: "mpesa",
-      }),
+      JSON.stringify({ customer_id: customer.id, name, phone, method: "mpesa" }),
     );
 
     res.json({
@@ -536,8 +568,7 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
       method: "mpesa",
       reference,
       status: data.status,
-      display_text:
-        data.display_text || "Check your phone for the M-Pesa prompt",
+      display_text: data.display_text || "Check your phone for the M-Pesa prompt",
       amount_kes: amountKes,
       currency: CURRENCY,
     });
@@ -548,15 +579,17 @@ app.post("/api/payments/paystack/initialize", async (req, res) => {
 });
 
 /* =========================================================
-   CARD INITIALIZE  → /transaction/initialize (hosted checkout)
-   This is the ONLY reliable way to handle 3DS on mobile.
+   CARD CHARGE — in-house handling of all statuses
 ========================================================= */
 
-app.post("/api/payments/paystack/card/initialize", async (req, res) => {
+app.post("/api/payments/paystack/charge", async (req, res) => {
   try {
     const email = normalizeEmail(req.body.email);
     const name = cleanString(req.body.name, 100);
     const amountKes = Number(req.body.amount_kes ?? req.body.amount);
+    const cardNumber = normalizeCardNumber(req.body.card_number);
+    const cvv = cleanString(req.body.cvv, 4);
+    const expiryRaw = cleanString(req.body.expiry, 10);
 
     if (!isValidEmail(email))
       return res.status(400).json({ error: "Enter a valid email" });
@@ -569,19 +602,30 @@ app.post("/api/payments/paystack/card/initialize", async (req, res) => {
         error: `Amount must be between KES ${MIN_PAYMENT_KES} and KES ${MAX_PAYMENT_KES}`,
       });
     }
+    if (!isValidCardNumber(cardNumber))
+      return res.status(400).json({ error: "Enter a valid card number" });
+    if (!/^\d{3,4}$/.test(cvv))
+      return res.status(400).json({ error: "Enter a valid CVV" });
+
+    const { month, year } = normalizeExpiry(expiryRaw);
+    if (!isValidExpiry(month, year))
+      return res.status(400).json({ error: "Enter a valid expiry (MM/YY)" });
 
     const amountSubunit = moneyToSubunit(amountKes);
     const customer = getOrCreateCustomer(email, name, "");
     const reference = generateReference();
-    const callbackUrl = buildCallbackUrl();
 
     const payload = {
       email,
       amount: String(amountSubunit),
       currency: CURRENCY,
       reference,
-      callback_url: callbackUrl,
-      channels: ["card"],
+      card: {
+        number: cardNumber,
+        cvv,
+        expiry_month: month,
+        expiry_year: year,
+      },
       metadata: {
         customer_id: customer.id,
         email,
@@ -592,53 +636,85 @@ app.post("/api/payments/paystack/card/initialize", async (req, res) => {
     };
     if (PAYSTACK_SUBACCOUNT) payload.subaccount = PAYSTACK_SUBACCOUNT;
 
-    const pr = await paystackRequest("/transaction/initialize", {
+    const pr = await paystackRequest("/charge", {
       method: "POST",
       body: JSON.stringify(payload),
     });
     if (!pr.status || !pr.data)
-      throw new Error("Paystack did not return initialize data");
+      throw new Error("Paystack did not return charge data");
     const data = pr.data;
 
-    db.prepare(
-      `
+    const result = db
+      .prepare(
+        `
       INSERT INTO payment_attempts (
         customer_id, reference, provider, email, amount, currency,
         channel, status, authorization_url, access_code, metadata
       ) VALUES (?, ?, 'paystack', ?, ?, ?, 'card', ?, ?, ?, ?)
     `,
-    ).run(
-      customer.id,
-      reference,
-      email,
-      amountSubunit,
-      CURRENCY,
-      "initialized",
-      data.authorization_url || null,
-      data.access_code || null,
-      JSON.stringify({ customer_id: customer.id, name, method: "card" }),
-    );
+      )
+      .run(
+        customer.id,
+        reference,
+        email,
+        amountSubunit,
+        CURRENCY,
+        data.status || "initialized",
+        data.authorization_url || data.url || null,
+        data.access_code || null,
+        JSON.stringify({ customer_id: customer.id, name, method: "card" }),
+      );
+
+    const paymentAttemptId = result.lastInsertRowid;
+
+    if (data.status === "success") {
+      const credit = creditSuccessfulPayment({
+        customerId: customer.id,
+        reference,
+        providerTransactionId: data.id,
+        amount: Number(data.amount),
+        currency: data.currency,
+        paymentAttemptId,
+        paymentMethod:
+          data.authorization?.card_type || data.authorization?.brand || "card",
+        channel: data.channel || "card",
+        gatewayResponse: data.gateway_response,
+        metadata: JSON.stringify(data.metadata || {}),
+      });
+      if (data.authorization?.authorization_code) {
+        db.prepare(
+          `UPDATE payment_attempts SET authorization_code = ? WHERE id = ?`,
+        ).run(data.authorization.authorization_code, paymentAttemptId);
+      }
+      return res.json({
+        success: true,
+        reference,
+        status: "success",
+        paid: true,
+        amount_kes: subunitToMoney(data.amount),
+        currency: data.currency,
+        alreadyProcessed: credit.alreadyProcessed,
+      });
+    }
 
     res.json({
       success: true,
-      method: "card",
       reference,
-      status: "initialized",
+      status: data.status,
       paid: false,
-      authorization_url: data.authorization_url,
-      access_code: data.access_code,
-      amount_kes: amountKes,
-      currency: CURRENCY,
+      display_text: data.display_text || null,
+      message: data.message || null,
+      authorization_url: data.authorization_url || data.url || null,
+      access_code: data.access_code || null,
     });
   } catch (e) {
-    console.error("CARD INIT ERROR:", e.response || e.message);
-    res.status(502).json({ error: e.message || "Unable to start card payment" });
+    console.error("CARD CHARGE ERROR:", e.response || e.message);
+    res.status(502).json({ error: e.message || "Unable to charge card" });
   }
 });
 
 /* =========================================================
    SUBMIT PIN / OTP / BIRTHDAY / ADDRESS
-   (only used if you ever use /charge again — kept for safety)
 ========================================================= */
 
 app.post("/api/payments/paystack/submit", async (req, res) => {
@@ -711,6 +787,7 @@ app.post("/api/payments/paystack/submit", async (req, res) => {
         alreadyProcessed: credit.alreadyProcessed,
       });
     }
+
     res.json({
       success: true,
       reference,
@@ -718,7 +795,7 @@ app.post("/api/payments/paystack/submit", async (req, res) => {
       paid: false,
       display_text: data.display_text || null,
       message: data.message || null,
-      authorization_url: data.authorization_url || null,
+      authorization_url: data.authorization_url || data.url || null,
       access_code: data.access_code || null,
     });
   } catch (e) {
@@ -728,7 +805,81 @@ app.post("/api/payments/paystack/submit", async (req, res) => {
 });
 
 /* =========================================================
-   VERIFY
+   CHECK PENDING CHARGE — polling endpoint
+========================================================= */
+
+app.get("/api/payments/paystack/check-pending/:reference", async (req, res) => {
+  try {
+    const reference = cleanString(req.params.reference, 100);
+    const attempt = db
+      .prepare(`SELECT * FROM payment_attempts WHERE reference = ?`)
+      .get(reference);
+    if (!attempt) return res.status(404).json({ error: "Reference not found" });
+
+    let p = null;
+    try {
+      const pr = await paystackRequest(`/charge/${encodeURIComponent(reference)}`, {
+        method: "GET",
+      });
+      p = pr.data;
+    } catch (err) {
+      // Fallback to /transaction/verify if /charge/{ref} fails
+      try {
+        const pr2 = await paystackRequest(
+          `/transaction/verify/${encodeURIComponent(reference)}`,
+          { method: "GET" },
+        );
+        p = pr2.data;
+      } catch (err2) {
+        console.warn("check-pending both failed:", err.message, err2.message);
+      }
+    }
+
+    if (!p) throw new Error("No Paystack data");
+
+    if (p.status === "success") {
+      const credit = creditSuccessfulPayment({
+        customerId: attempt.customer_id,
+        reference,
+        providerTransactionId: p.id,
+        amount: Number(p.amount),
+        currency: p.currency,
+        paymentAttemptId: attempt.id,
+        paymentMethod:
+          p.authorization?.card_type || p.authorization?.brand || "card",
+        channel: p.channel || "card",
+        gatewayResponse: p.gateway_response,
+        metadata: JSON.stringify(p.metadata || {}),
+      });
+      return res.json({
+        success: true,
+        paid: true,
+        alreadyProcessed: credit.alreadyProcessed,
+        reference,
+        status: p.status,
+        amount_kes: subunitToMoney(p.amount),
+        currency: p.currency,
+      });
+    }
+
+    db.prepare(
+      `UPDATE payment_attempts SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+    ).run(p.status, attempt.id);
+
+    res.json({
+      success: true,
+      paid: false,
+      reference,
+      status: p.status,
+    });
+  } catch (e) {
+    console.error("CHECK PENDING ERROR:", e.response || e.message);
+    res.status(502).json({ error: e.message || "Unable to check pending charge" });
+  }
+});
+
+/* =========================================================
+   VERIFY (kept for /payment/callback and M-Pesa polling)
 ========================================================= */
 
 app.get("/api/payments/paystack/verify/:reference", async (req, res) => {
@@ -749,7 +900,6 @@ app.get("/api/payments/paystack/verify/:reference", async (req, res) => {
     const amountMatches = Number(p.amount) === Number(attempt.amount);
     const currencyMatches =
       String(p.currency).toUpperCase() === String(attempt.currency).toUpperCase();
-
     if (!amountMatches)
       return res.status(400).json({ error: "Amount mismatch", status: p.status });
     if (!currencyMatches)
@@ -852,7 +1002,9 @@ app.post("/webhooks/paystack", async (req, res) => {
             currency: p.currency,
             paymentAttemptId: attempt.id,
             paymentMethod:
-              p.authorization?.card_type || p.authorization?.brand || "card",
+              p.authorization?.card_type ||
+              p.authorization?.brand ||
+              "card",
             channel: p.channel,
             gatewayResponse: p.gateway_response,
             metadata: JSON.stringify(p.metadata || {}),
